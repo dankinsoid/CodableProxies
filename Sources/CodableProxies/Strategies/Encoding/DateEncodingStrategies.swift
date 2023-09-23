@@ -9,21 +9,21 @@ public extension EncodingStrategy {
 
 public extension EncodingStrategy.Date {
     
-    static var `default`: EncodingStrategy { ValueCodingStrategy.Date.default.encoding }
+    static var `default`: EncodingStrategy { CodingStrategy.Date.default.encoding }
 
     /// full-date notation as defined by RFC 3339, section 5.6, for example, 2017-07-21.
     static var date: EncodingStrategy {
-        ValueCodingStrategy.Date.date.encoding
+        CodingStrategy.Date.date.encoding
     }
 
     /// the date-time notation as defined by RFC 3339, section 5.6, for example, 2017-07-21T17:32:28Z.
     static var iso860: EncodingStrategy {
-        ValueCodingStrategy.Date.iso860.encoding
+        CodingStrategy.Date.iso860.encoding
     }
 
     /// the interval between the date value and 00:00:00 UTC on 1 January 1970.
     static var timestamp: EncodingStrategy {
-        ValueCodingStrategy.Date.timestamp.encoding
+        CodingStrategy.Date.timestamp.encoding
     }
 
     /// Custom date encoding strategy

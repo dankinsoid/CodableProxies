@@ -33,7 +33,7 @@ public struct EncodingStrategy {
     let encodeUInt16IfNil: ((Encoder) throws -> Void)?
     let encodeUInt32IfNil: ((Encoder) throws -> Void)?
     let encodeUInt64IfNil: ((Encoder) throws -> Void)?
-    let encodeEncodableIfNil: ((Any.Type, Encoder) throws -> Bool)?
+    let encodeEncodableIfNil: ((Encodable.Type, Encoder) throws -> Bool)?
     
     let encodeKey: ((String) -> String)?
     
@@ -68,7 +68,7 @@ public struct EncodingStrategy {
         encodeUInt16IfNil: ((Encoder) throws -> Void)? = nil,
         encodeUInt32IfNil: ((Encoder) throws -> Void)? = nil,
         encodeUInt64IfNil: ((Encoder) throws -> Void)? = nil,
-        encodeEncodableIfNil: ((Any.Type, Encoder) throws -> Bool)? = nil,
+        encodeEncodableIfNil: ((Encodable.Type, Encoder) throws -> Bool)? = nil,
         encodeKey: ((String) -> String)? = nil
     ) {
         self.encodeNil = encodeNil
@@ -140,21 +140,21 @@ public extension EncodingStrategy {
         )
     }
     
-    init(ifPresent type: Bool.Type, encode: @escaping (Encoder) throws -> Void) { self.init(encodeBoolIfNil: encode) }
-    init(ifPresent type: String.Type, encode: @escaping (Encoder) throws -> Void) { self.init(encodeStringIfNil: encode) }
-    init(ifPresent type: Double.Type, encode: @escaping (Encoder) throws -> Void) { self.init(encodeDoubleIfNil: encode) }
-    init(ifPresent type: Float.Type, encode: @escaping (Encoder) throws -> Void) { self.init(encodeFloatIfNil: encode) }
-    init(ifPresent type: Int.Type, encode: @escaping (Encoder) throws -> Void) { self.init(encodeIntIfNil: encode) }
-    init(ifPresent type: Int8.Type, encode: @escaping (Encoder) throws -> Void) { self.init(encodeInt8IfNil: encode) }
-    init(ifPresent type: Int16.Type, encode: @escaping (Encoder) throws -> Void) { self.init(encodeInt16IfNil: encode) }
-    init(ifPresent type: Int32.Type, encode: @escaping (Encoder) throws -> Void) { self.init(encodeInt32IfNil: encode) }
-    init(ifPresent type: Int64.Type, encode: @escaping (Encoder) throws -> Void) { self.init(encodeInt64IfNil: encode) }
-    init(ifPresent type: UInt.Type, encode: @escaping (Encoder) throws -> Void) { self.init(encodeUIntIfNil: encode) }
-    init(ifPresent type: UInt8.Type, encode: @escaping (Encoder) throws -> Void) { self.init(encodeUInt8IfNil: encode) }
-    init(ifPresent type: UInt16.Type, encode: @escaping (Encoder) throws -> Void) { self.init(encodeUInt16IfNil: encode) }
-    init(ifPresent type: UInt32.Type, encode: @escaping (Encoder) throws -> Void) { self.init(encodeUInt32IfNil: encode) }
-    init(ifPresent type: UInt64.Type, encode: @escaping (Encoder) throws -> Void) { self.init(encodeUInt64IfNil: encode) }
-    init(encodeIfNil: @escaping (Any.Type, Encoder) throws -> Bool) { self.init(encodeEncodableIfNil: encodeIfNil) }
+    init(ifNil type: Bool.Type, encode: @escaping (Encoder) throws -> Void) { self.init(encodeBoolIfNil: encode) }
+    init(ifNil type: String.Type, encode: @escaping (Encoder) throws -> Void) { self.init(encodeStringIfNil: encode) }
+    init(ifNil type: Double.Type, encode: @escaping (Encoder) throws -> Void) { self.init(encodeDoubleIfNil: encode) }
+    init(ifNil type: Float.Type, encode: @escaping (Encoder) throws -> Void) { self.init(encodeFloatIfNil: encode) }
+    init(ifNil type: Int.Type, encode: @escaping (Encoder) throws -> Void) { self.init(encodeIntIfNil: encode) }
+    init(ifNil type: Int8.Type, encode: @escaping (Encoder) throws -> Void) { self.init(encodeInt8IfNil: encode) }
+    init(ifNil type: Int16.Type, encode: @escaping (Encoder) throws -> Void) { self.init(encodeInt16IfNil: encode) }
+    init(ifNil type: Int32.Type, encode: @escaping (Encoder) throws -> Void) { self.init(encodeInt32IfNil: encode) }
+    init(ifNil type: Int64.Type, encode: @escaping (Encoder) throws -> Void) { self.init(encodeInt64IfNil: encode) }
+    init(ifNil type: UInt.Type, encode: @escaping (Encoder) throws -> Void) { self.init(encodeUIntIfNil: encode) }
+    init(ifNil type: UInt8.Type, encode: @escaping (Encoder) throws -> Void) { self.init(encodeUInt8IfNil: encode) }
+    init(ifNil type: UInt16.Type, encode: @escaping (Encoder) throws -> Void) { self.init(encodeUInt16IfNil: encode) }
+    init(ifNil type: UInt32.Type, encode: @escaping (Encoder) throws -> Void) { self.init(encodeUInt32IfNil: encode) }
+    init(ifNil type: UInt64.Type, encode: @escaping (Encoder) throws -> Void) { self.init(encodeUInt64IfNil: encode) }
+    init(encodeIfNil: @escaping (Encodable.Type, Encoder) throws -> Bool) { self.init(encodeEncodableIfNil: encodeIfNil) }
     
     init<T: Encodable>(
         ifNil type: T.Type,

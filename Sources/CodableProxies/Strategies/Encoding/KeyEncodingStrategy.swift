@@ -21,30 +21,21 @@ public extension EncodingStrategy.Key {
 
     /// Encodes from camelCase to snake_case.
     static var convertToSnakeCase: EncodingStrategy {
-        .Key.convertToSnakeCase(separator: "_")
+        CodingStrategy.Key.camelCase.encoding
     }
 
     /// Encodes from camelCase to snake_case with a custom separator.
     static func convertToSnakeCase(separator: String) -> EncodingStrategy {
-        .Key.custom {
-            $0.toSnakeCase(separator: separator)
-        }
+        CodingStrategy.Key.camelCase(separator: separator).encoding
     }
-}
-
-private extension String {
     
-    func toSnakeCase(separator: String = "_") -> String {
-        var result = ""
-
-        for character in self {
-            if character.isUppercase {
-                result += separator + character.lowercased()
-            } else {
-                result += String(character)
-            }
-        }
-
-        return result
+    /// Encodes from snake_case to camelCase.
+    static var convertToCamelCase: EncodingStrategy {
+        CodingStrategy.Key.snakeCase.encoding
+    }
+    
+    /// Encodes from snake_case to camelCase with a custom separator.
+    static func convertToCamelCase(separator: String) -> EncodingStrategy {
+        CodingStrategy.Key.snakeCase(separator: separator).encoding
     }
 }

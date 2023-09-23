@@ -1,19 +1,19 @@
 import Foundation
 
-public extension ValueCodingStrategy {
+public extension CodingStrategy {
     
     /// URL encoding strategy scope.
     enum URL {
     }
 }
 
-public extension ValueCodingStrategy.URL {
+public extension CodingStrategy.URL {
     
-    static var `default`: ValueCodingStrategy = .URL.uri
+    static var `default`: CodingStrategy = .URL.uri
     
     /// URI string.
-    static var uri: ValueCodingStrategy {
-        ValueCodingStrategy(URL.self) { decoder in
+    static var uri: CodingStrategy {
+        CodingStrategy(URL.self) { decoder in
             let container = try decoder.singleValueContainer()
             let urlString = try container.decode(String.self)
             guard let url = URL(string: urlString) else {

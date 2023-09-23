@@ -1,20 +1,20 @@
 import Foundation
 
-public extension ValueCodingStrategy {
+public extension CodingStrategy {
     
     /// Date coding strategy scope.
     enum Date {
     }
 }
 
-public extension ValueCodingStrategy.Date {
+public extension CodingStrategy.Date {
     
-    static var `default`: ValueCodingStrategy = .Date.iso860
+    static var `default`: CodingStrategy = .Date.iso860
 
     /// full-date notation as defined by RFC 3339, section 5.6, for example, 2017-07-21.
-    static var date: ValueCodingStrategy {
+    static var date: CodingStrategy {
         .Date.custom { container in
-            let date = try ValueCodingStrategy.Date.dateFormatter.date(from: container.decode(String.self))
+            let date = try CodingStrategy.Date.dateFormatter.date(from: container.decode(String.self))
             guard let date else {
                 throw DecodingError.dataCorruptedError(
                     in: container,
@@ -23,12 +23,12 @@ public extension ValueCodingStrategy.Date {
             }
             return date
         } encode: { date, container in
-            try container.encode(ValueCodingStrategy.Date.dateFormatter.string(from: date))
+            try container.encode(CodingStrategy.Date.dateFormatter.string(from: date))
         }
     }
 
     /// the date-time notation as defined by RFC 3339, section 5.6, for example, 2017-07-21T17:32:28Z.
-    static var iso860: ValueCodingStrategy {
+    static var iso860: CodingStrategy {
         .Date.custom { container in
             let date = try isoFormatter.date(from: container.decode(String.self))
             guard let date else {
@@ -44,7 +44,7 @@ public extension ValueCodingStrategy.Date {
     }
 
     /// the interval between the date value and 00:00:00 UTC on 1 January 1970.
-    static var timestamp: ValueCodingStrategy {
+    static var timestamp: CodingStrategy {
         .Date.custom { container in
             try Date(timeIntervalSince1970: container.decode(TimeInterval.self))
         } encode: { date, container in
@@ -56,8 +56,8 @@ public extension ValueCodingStrategy.Date {
     static func custom(
         decode: @escaping (SingleValueDecodingContainer) throws -> Date,
         encode: @escaping (Date, inout SingleValueEncodingContainer) throws -> Void
-    ) -> ValueCodingStrategy {
-        ValueCodingStrategy(Date.self) {
+    ) -> CodingStrategy {
+        CodingStrategy(Date.self) {
             try decode($0.singleValueContainer())
         } encode: {
             var container = $1.singleValueContainer()
@@ -66,7 +66,7 @@ public extension ValueCodingStrategy.Date {
     }
 }
 
-extension ValueCodingStrategy.Date {
+extension CodingStrategy.Date {
 
     static var dateFormatter: DateFormatter {
         _dateFormatter.dateFormat = "yyyy-MM-dd"

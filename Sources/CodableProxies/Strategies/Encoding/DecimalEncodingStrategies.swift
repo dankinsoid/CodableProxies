@@ -10,16 +10,16 @@ public extension EncodingStrategy {
 public extension EncodingStrategy.Decimal {
     
     static var `default`: EncodingStrategy {
-        ValueCodingStrategy.Decimal.default.encoding
+        CodingStrategy.Decimal.default.encoding
     }
     
     /// Quoted string
     static var string: EncodingStrategy {
-        ValueCodingStrategy.Decimal.string.encoding
+        CodingStrategy.Decimal.string.encoding
     }
     
     /// Number
     static var number: EncodingStrategy {
-        ValueCodingStrategy.Decimal.number.encoding
+        CodingStrategy.Decimal.number.encoding
     }
 }

@@ -1,18 +1,18 @@
 import Foundation
 
-public extension ValueCodingStrategy {
+public extension CodingStrategy {
     
     /// Data coding strategy scope.
     enum Data {
     }
 }
 
-public extension ValueCodingStrategy.Data {
+public extension CodingStrategy.Data {
     
-    static var `default`: ValueCodingStrategy = .Data.base64
+    static var `default`: CodingStrategy = .Data.base64
     
     /// Base64 string.
-    static var base64: ValueCodingStrategy {
+    static var base64: CodingStrategy {
         .Data.base64()
     }
     
@@ -20,8 +20,8 @@ public extension ValueCodingStrategy.Data {
     static func base64(
         decodingOptions: Foundation.Data.Base64DecodingOptions = [],
         encodingOptions: Foundation.Data.Base64EncodingOptions = []
-    ) -> ValueCodingStrategy {
-        ValueCodingStrategy(Data.self) { decoder in
+    ) -> CodingStrategy {
+        CodingStrategy(Data.self) { decoder in
             let container = try decoder.singleValueContainer()
             let base64String = try container.decode(String.self)
             guard let data = Data(base64Encoded: base64String, options: decodingOptions) else {

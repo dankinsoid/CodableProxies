@@ -1,19 +1,19 @@
 import Foundation
 
-public extension ValueCodingStrategy {
+public extension CodingStrategy {
     
     /// Decimal coding strategy scope.
     enum Decimal {
     }
 }
 
-public extension ValueCodingStrategy.Decimal {
+public extension CodingStrategy.Decimal {
     
-    static var `default`: ValueCodingStrategy = .Decimal.number
+    static var `default`: CodingStrategy = .Decimal.number
     
     /// Quoted string
-    static var string: ValueCodingStrategy {
-        ValueCodingStrategy(Decimal.self) {
+    static var string: CodingStrategy {
+        CodingStrategy(Decimal.self) {
             let container = try $0.singleValueContainer()
             let string = try container.decode(String.self)
             guard let decimal = Decimal(string: string) else {
@@ -30,8 +30,8 @@ public extension ValueCodingStrategy.Decimal {
     }
     
     /// Number
-    static var number: ValueCodingStrategy {
-        ValueCodingStrategy(Decimal.self) {
+    static var number: CodingStrategy {
+        CodingStrategy(Decimal.self) {
             let container = try $0.singleValueContainer()
             let number = try container.decode(Double.self)
             return Decimal(number)
