@@ -1,0 +1,38 @@
+import Foundation
+
+public extension EncodingStrategy {
+    
+    /// Date encoding strategy.
+    enum Date {
+    }
+}
+
+public extension EncodingStrategy.Date {
+    
+    static var `default`: EncodingStrategy { ValueCodingStrategy.Date.default.encoding }
+
+    /// full-date notation as defined by RFC 3339, section 5.6, for example, 2017-07-21.
+    static var date: EncodingStrategy {
+        ValueCodingStrategy.Date.date.encoding
+    }
+
+    /// the date-time notation as defined by RFC 3339, section 5.6, for example, 2017-07-21T17:32:28Z.
+    static var iso860: EncodingStrategy {
+        ValueCodingStrategy.Date.iso860.encoding
+    }
+
+    /// the interval between the date value and 00:00:00 UTC on 1 January 1970.
+    static var timestamp: EncodingStrategy {
+        ValueCodingStrategy.Date.timestamp.encoding
+    }
+
+    /// Custom date encoding strategy
+    static func custom(
+        encode: @escaping (Date, inout SingleValueEncodingContainer) throws -> Void
+    ) -> EncodingStrategy {
+        EncodingStrategy(Date.self) {
+            var container = $1.singleValueContainer()
+            try encode($0, &container)
+        }
+    }
+}
