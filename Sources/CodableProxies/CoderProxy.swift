@@ -16,6 +16,18 @@ public struct CoderProxy<SourceTarget>: ValueDecoder, ValueEncoder {
         self.encoder = encoder
     }
     
+    @_disfavoredOverload
+    public init(
+        decoder: any ValueDecoder<SourceTarget>,
+        encoder: any ValueEncoder<SourceTarget>,
+        strategy: CodingStrategy = .default
+    ) {
+        self.init(
+            decoder: DecoderProxy(decoder, strategy: strategy.decoding),
+            encoder: EncoderProxy(encoder, strategy: strategy.encoding)
+        )
+    }
+    
     public func decode<T>(_ type: T.Type, from source: SourceTarget) throws -> T where T : Decodable {
         try decode(from: source)
     }

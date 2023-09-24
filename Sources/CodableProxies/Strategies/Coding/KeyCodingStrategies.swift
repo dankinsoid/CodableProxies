@@ -18,8 +18,8 @@ public extension CodingStrategy.Key {
     
     /// Custom key coding strategy.
     static func custom(
-        decode: @escaping (String) -> String,
-        encode: @escaping (String) -> String
+        decode: @escaping (Swift.String) -> Swift.String,
+        encode: @escaping (Swift.String) -> Swift.String
     ) -> CodingStrategy {
         CodingStrategy(
             decoding: .Key.custom(decode),
@@ -33,7 +33,7 @@ public extension CodingStrategy.Key {
     }
     
     /// Encodes from camelCase to snake_case with a custom separator.
-    static func snakeCase(separator: String) -> CodingStrategy {
+    static func snakeCase(separator: Swift.String) -> CodingStrategy {
         .Key.custom {
             $0.fromSnakeCase(separator: CharacterSet(charactersIn: separator))
         } encode: {
@@ -48,7 +48,7 @@ public extension CodingStrategy.Key {
     }
     
     /// Encodes from snake_case to camelCase with a custom separator.
-    static func camelCase(separator: String) -> CodingStrategy {
+    static func camelCase(separator: Swift.String) -> CodingStrategy {
         .Key.custom {
             $0.toSnakeCase(separator: separator)
         } encode: {

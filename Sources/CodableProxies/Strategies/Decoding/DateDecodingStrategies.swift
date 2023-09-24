@@ -28,9 +28,9 @@ public extension DecodingStrategy.Date {
 
     /// Custom date decoding strategy
     static func custom(
-        decode: @escaping (SingleValueDecodingContainer) throws -> Date
+        decode: @escaping (SingleValueDecodingContainer) throws -> Foundation.Date
     ) -> DecodingStrategy {
-        DecodingStrategy(Date.self) {
+        DecodingStrategy(Foundation.Date.self) {
             try decode($0.singleValueContainer())
         }
     }

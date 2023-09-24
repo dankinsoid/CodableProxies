@@ -8,7 +8,7 @@ final class EncoderProxyTests: XCTestCase {
         jsonEncoder.outputFormatting = [.prettyPrinted, .sortedKeys]
         let encoder = EncoderProxy(
             jsonEncoder,
-            strategy: [.Decimal.string, .Key.convertToSnakeCase(separator: "-")]
+            strategy: [.Decimal.string, .Numeric.string, .Bool.string, .Date.timestamp]
         )
         let testStruct = TestStruct(
             int: 1,
@@ -17,7 +17,18 @@ final class EncoderProxyTests: XCTestCase {
             date: Date(),
             optionalInt: nil,
             url: URL(string: "https://www.google.com"),
-            keyWithCustomEncoding: "keyWithCustomEncoding"
+            bool: true,
+            keyWithCustomEncoding: "keyWithCustomEncoding",
+            embedded: EmbeddedStruct(
+                int: 1,
+                string: "2",
+                decimal: 3.0,
+                date: Date(),
+                optionalInt: nil,
+                url: URL(string: "https://www.google.com"),
+                bool: true,
+                keyWithCustomEncoding: "keyWithCustomEncoding"
+            )
         )
         let encoded = try encoder.encode(testStruct)
         print(String(data: encoded, encoding: .utf8) ?? "")
@@ -32,6 +43,19 @@ struct TestStruct: Encodable {
     var date: Date
     var optionalInt: Int?
     var url: URL?
+    var bool: Bool?
     var keyWithCustomEncoding: String
+    var embedded: EmbeddedStruct?
 }
 
+struct EmbeddedStruct: Encodable {
+    
+    var int: Int
+    var string: String
+    var decimal: Decimal
+    var date: Date
+    var optionalInt: Int?
+    var url: URL?
+    var bool: Bool?
+    var keyWithCustomEncoding: String
+}

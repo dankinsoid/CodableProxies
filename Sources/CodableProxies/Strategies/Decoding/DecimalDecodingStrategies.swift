@@ -13,9 +13,9 @@ public extension DecodingStrategy.Decimal {
         CodingStrategy.Decimal.default.decoding
     }
     
-    /// Quoted string
-    static var string: DecodingStrategy {
-        CodingStrategy.Decimal.string.decoding
+    /// Decimal coding strategy that tries to decode from a string if the value is not a number.
+    static var tryDecodeFromString: DecodingStrategy {
+        CodingStrategy.Decimal.tryDecodeFromString.decoding
     }
     
     /// Number

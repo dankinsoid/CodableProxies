@@ -4,11 +4,9 @@ struct EncoderWrapper: Encoder {
     
     let wrapped: Encoder
     let strategy: EncodingStrategy
-    let _singleContainer: () -> SingleValueEncodingContainer
-    let _unkeyedContainer: () -> UnkeyedEncodingContainer
-    let _keyedContainer: () -> KeyedEncodingContainer<AnyCodingKey>
     var codingPath: [CodingKey] { wrapped.codingPath }
     var userInfo: [CodingUserInfoKey : Any] { wrapped.userInfo }
+    private var ignoreStrategy: PartialKeyPath<EncodingStrategy>?
     
     init(
         _ wrapped: Encoder,
@@ -16,16 +14,13 @@ struct EncoderWrapper: Encoder {
     ) {
         self.wrapped = wrapped
         self.strategy = strategy
-        _singleContainer = { wrapped.singleValueContainer() }
-        _unkeyedContainer = { wrapped.unkeyedContainer() }
-        _keyedContainer = { wrapped.container(keyedBy: AnyCodingKey.self) }
     }
     
     func container<Key>(keyedBy type: Key.Type) -> KeyedEncodingContainer<Key> where Key : CodingKey {
         KeyedEncodingContainer(
             KeyedEncodingContainerWrapper(
                 wrapped: wrapped.container(keyedBy: AnyCodingKey.self),
-                encoder: EncoderWrapper(wrapped, strategy: strategy)
+                encoder: self
             )
         )
     }
@@ -33,14 +28,14 @@ struct EncoderWrapper: Encoder {
     func unkeyedContainer() -> UnkeyedEncodingContainer {
         UnkeyedEncodingContainerWrapper(
             wrapped: wrapped.unkeyedContainer(),
-            encoder: EncoderWrapper(wrapped, strategy: strategy)
+            encoder: self
         )
     }
     
     func singleValueContainer() -> SingleValueEncodingContainer {
         SingleValueEncodingContainerWrapper(
             wrapped: wrapped.singleValueContainer(),
-            encoder: EncoderWrapper(wrapped, strategy: strategy)
+            encoder: self
         )
     }
     
@@ -50,8 +45,8 @@ struct EncoderWrapper: Encoder {
         _ keyPath: KeyPath<EncodingStrategy, ((T, Encoder) throws -> Void)?>,
         encode: () throws -> Void
     ) throws {
-        if let encode = strategy[keyPath: keyPath] {
-            try encode(value, self)
+        if ignoreStrategy != keyPath, let encode = strategy[keyPath: keyPath] {
+            try encode(value, ignoring(keyPath))
         } else {
             try encode()
         }
@@ -59,7 +54,7 @@ struct EncoderWrapper: Encoder {
     
     @inline(__always)
     func encode(_ value: Encodable, encode: () throws -> Void) throws {
-        if try strategy.encodeEncodable?(value, self) == true {
+        if ignoreStrategy != \.encodeEncodable, try strategy.encodeEncodable?(value, ignoring(\.encodeEncodable)) == true {
             return
         }
         try encode()
@@ -72,12 +67,12 @@ struct EncoderWrapper: Encoder {
         _ keyPath: KeyPath<EncodingStrategy, ((T, Encoder) throws -> Void)?>,
         encode: () throws -> Void
     ) throws {
-        if let value {
+        if let value, ignoreStrategy != keyPath {
             try self.encode(value, keyPath, encode: encode)
             return
         }
-        if let encode = strategy[keyPath: keyPathIfNil] {
-            try encode(self)
+        if ignoreStrategy != keyPathIfNil, let encode = strategy[keyPath: keyPathIfNil] {
+            try encode(ignoring(keyPathIfNil))
         } else {
             try encode()
         }
@@ -85,14 +80,21 @@ struct EncoderWrapper: Encoder {
     
     @inline(__always)
     func encodeIfPresent<T: Encodable>(_ value: T?, encode: () throws -> Void) throws {
-        if let value {
+        if let value, ignoreStrategy != \.encodeEncodable {
             try self.encode(value, encode: encode)
             return
         }
-        if try strategy.encodeEncodableIfNil?(T.self, self) == true {
+        if ignoreStrategy != \.encodeEncodableIfNil, try strategy.encodeEncodableIfNil?(T.self, ignoring(\.encodeEncodableIfNil)) == true {
             return
         }
         try encode()
+    }
+    
+    @inline(__always)
+    private func ignoring(_ keyPath: PartialKeyPath<EncodingStrategy>) -> EncoderWrapper {
+        var copy = self
+        copy.ignoreStrategy = keyPath
+        return copy
     }
 }
 
@@ -401,11 +403,11 @@ private final class UnkeyedEncodingContainerWrapper: UnkeyedEncodingContainer {
     
     // TODO: customize new methods
 //    func encodeConditional<T>(_ object: T) throws where T : AnyObject, T : Encodable {
-//
+//        try wrapped.encodeConditional(object)
 //    }
 //
 //    func encode<T>(contentsOf sequence: T) throws where T : Sequence, T.Element == Bool {
-//
+//        try wrapped.encode(contentsOf: sequence)
 //    }
 //
 //    func encode<T>(contentsOf sequence: T) throws where T : Sequence, T.Element == String {

@@ -2,74 +2,74 @@ import Foundation
 
 public struct DecodingStrategy {
     
-    let decodeNil: ((Decoder) throws -> Void)?
-    let decodeBool: ((Decoder) throws -> Bool)?
-    let decodeString: ((Decoder) throws -> String)?
-    let decodeDouble: ((Decoder) throws -> Double)?
-    let decodeFloat: ((Decoder) throws -> Float)?
-    let decodeInt: ((Decoder) throws -> Int)?
-    let decodeInt8: ((Decoder) throws -> Int8)?
-    let decodeInt16: ((Decoder) throws -> Int16)?
-    let decodeInt32: ((Decoder) throws -> Int32)?
-    let decodeInt64: ((Decoder) throws -> Int64)?
-    let decodeUInt: ((Decoder) throws -> UInt)?
-    let decodeUInt8: ((Decoder) throws -> UInt8)?
-    let decodeUInt16: ((Decoder) throws -> UInt16)?
-    let decodeUInt32: ((Decoder) throws -> UInt32)?
-    let decodeUInt64: ((Decoder) throws -> UInt64)?
+    let decodeNil: ((Decoder) throws -> Swift.Bool)?
+    let decodeBool: ((Decoder) throws -> Swift.Bool)?
+    let decodeString: ((Decoder) throws -> Swift.String)?
+    let decodeDouble: ((Decoder) throws -> Swift.Double)?
+    let decodeFloat: ((Decoder) throws -> Swift.Float)?
+    let decodeInt: ((Decoder) throws -> Swift.Int)?
+    let decodeInt8: ((Decoder) throws -> Swift.Int8)?
+    let decodeInt16: ((Decoder) throws -> Swift.Int16)?
+    let decodeInt32: ((Decoder) throws -> Swift.Int32)?
+    let decodeInt64: ((Decoder) throws -> Swift.Int64)?
+    let decodeUInt: ((Decoder) throws -> Swift.UInt)?
+    let decodeUInt8: ((Decoder) throws -> Swift.UInt8)?
+    let decodeUInt16: ((Decoder) throws -> Swift.UInt16)?
+    let decodeUInt32: ((Decoder) throws -> Swift.UInt32)?
+    let decodeUInt64: ((Decoder) throws -> Swift.UInt64)?
     let decodeDecodable: ((Decodable.Type, Decoder) throws -> Decodable?)?
     
-    let decodeBoolIfNil: ((Decoder) throws -> Bool)?
-    let decodeStringIfNil: ((Decoder) throws -> String)?
-    let decodeDoubleIfNil: ((Decoder) throws -> Double)?
-    let decodeFloatIfNil: ((Decoder) throws -> Float)?
-    let decodeIntIfNil: ((Decoder) throws -> Int)?
-    let decodeInt8IfNil: ((Decoder) throws -> Int8)?
-    let decodeInt16IfNil: ((Decoder) throws -> Int16)?
-    let decodeInt32IfNil: ((Decoder) throws -> Int32)?
-    let decodeInt64IfNil: ((Decoder) throws -> Int64)?
-    let decodeUIntIfNil: ((Decoder) throws -> UInt)?
-    let decodeUInt8IfNil: ((Decoder) throws -> UInt8)?
-    let decodeUInt16IfNil: ((Decoder) throws -> UInt16)?
-    let decodeUInt32IfNil: ((Decoder) throws -> UInt32)?
-    let decodeUInt64IfNil: ((Decoder) throws -> UInt64)?
+    let decodeBoolIfNil: ((Decoder) throws -> Swift.Bool?)?
+    let decodeStringIfNil: ((Decoder) throws -> Swift.String?)?
+    let decodeDoubleIfNil: ((Decoder) throws -> Swift.Double?)?
+    let decodeFloatIfNil: ((Decoder) throws -> Swift.Float?)?
+    let decodeIntIfNil: ((Decoder) throws -> Swift.Int?)?
+    let decodeInt8IfNil: ((Decoder) throws -> Swift.Int8?)?
+    let decodeInt16IfNil: ((Decoder) throws -> Swift.Int16?)?
+    let decodeInt32IfNil: ((Decoder) throws -> Swift.Int32?)?
+    let decodeInt64IfNil: ((Decoder) throws -> Swift.Int64?)?
+    let decodeUIntIfNil: ((Decoder) throws -> Swift.UInt?)?
+    let decodeUInt8IfNil: ((Decoder) throws -> Swift.UInt8?)?
+    let decodeUInt16IfNil: ((Decoder) throws -> Swift.UInt16?)?
+    let decodeUInt32IfNil: ((Decoder) throws -> Swift.UInt32?)?
+    let decodeUInt64IfNil: ((Decoder) throws -> Swift.UInt64?)?
     let decodeDecodableIfNil: ((Decodable.Type, Decoder) throws -> Decodable?)?
     
-    let decodeKey: ((String) -> String)?
+    let decodeKey: ((String) -> Swift.String)?
     
     init(
-        decodeNil: ((Decoder) throws -> Void)? = nil,
-        decodeBool: ((Decoder) throws -> Bool)? = nil,
-        decodeString: ((Decoder) throws -> String)? = nil,
-        decodeDouble: ((Decoder) throws -> Double)? = nil,
-        decodeFloat: ((Decoder) throws -> Float)? = nil,
-        decodeInt: ((Decoder) throws -> Int)? = nil,
-        decodeInt8: ((Decoder) throws -> Int8)? = nil,
-        decodeInt16: ((Decoder) throws -> Int16)? = nil,
-        decodeInt32: ((Decoder) throws -> Int32)? = nil,
-        decodeInt64: ((Decoder) throws -> Int64)? = nil,
-        decodeUInt: ((Decoder) throws -> UInt)? = nil,
-        decodeUInt8: ((Decoder) throws -> UInt8)? = nil,
-        decodeUInt16: ((Decoder) throws -> UInt16)? = nil,
-        decodeUInt32: ((Decoder) throws -> UInt32)? = nil,
-        decodeUInt64: ((Decoder) throws -> UInt64)? = nil,
+        decodeNil: ((Decoder) throws -> Swift.Bool)? = nil,
+        decodeBool: ((Decoder) throws -> Swift.Bool)? = nil,
+        decodeString: ((Decoder) throws -> Swift.String)? = nil,
+        decodeDouble: ((Decoder) throws -> Swift.Double)? = nil,
+        decodeFloat: ((Decoder) throws -> Swift.Float)? = nil,
+        decodeInt: ((Decoder) throws -> Swift.Int)? = nil,
+        decodeInt8: ((Decoder) throws -> Swift.Int8)? = nil,
+        decodeInt16: ((Decoder) throws -> Swift.Int16)? = nil,
+        decodeInt32: ((Decoder) throws -> Swift.Int32)? = nil,
+        decodeInt64: ((Decoder) throws -> Swift.Int64)? = nil,
+        decodeUInt: ((Decoder) throws -> Swift.UInt)? = nil,
+        decodeUInt8: ((Decoder) throws -> Swift.UInt8)? = nil,
+        decodeUInt16: ((Decoder) throws -> Swift.UInt16)? = nil,
+        decodeUInt32: ((Decoder) throws -> Swift.UInt32)? = nil,
+        decodeUInt64: ((Decoder) throws -> Swift.UInt64)? = nil,
         decodeDecodable: ((Decodable.Type, Decoder) throws -> Decodable?)? = nil,
-        decodeBoolIfNil: ((Decoder) throws -> Bool)? = nil,
-        decodeStringIfNil: ((Decoder) throws -> String)? = nil,
-        decodeDoubleIfNil: ((Decoder) throws -> Double)? = nil,
-        decodeFloatIfNil: ((Decoder) throws -> Float)? = nil,
-        decodeIntIfNil: ((Decoder) throws -> Int)? = nil,
-        decodeInt8IfNil: ((Decoder) throws -> Int8)? = nil,
-        decodeInt16IfNil: ((Decoder) throws -> Int16)? = nil,
-        decodeInt32IfNil: ((Decoder) throws -> Int32)? = nil,
-        decodeInt64IfNil: ((Decoder) throws -> Int64)? = nil,
-        decodeUIntIfNil: ((Decoder) throws -> UInt)? = nil,
-        decodeUInt8IfNil: ((Decoder) throws -> UInt8)? = nil,
-        decodeUInt16IfNil: ((Decoder) throws -> UInt16)? = nil,
-        decodeUInt32IfNil: ((Decoder) throws -> UInt32)? = nil,
-        decodeUInt64IfNil: ((Decoder) throws -> UInt64)? = nil,
+        decodeBoolIfNil: ((Decoder) throws -> Swift.Bool?)? = nil,
+        decodeStringIfNil: ((Decoder) throws -> Swift.String?)? = nil,
+        decodeDoubleIfNil: ((Decoder) throws -> Swift.Double?)? = nil,
+        decodeFloatIfNil: ((Decoder) throws -> Swift.Float?)? = nil,
+        decodeIntIfNil: ((Decoder) throws -> Swift.Int?)? = nil,
+        decodeInt8IfNil: ((Decoder) throws -> Swift.Int8?)? = nil,
+        decodeInt16IfNil: ((Decoder) throws -> Swift.Int16?)? = nil,
+        decodeInt32IfNil: ((Decoder) throws -> Swift.Int32?)? = nil,
+        decodeInt64IfNil: ((Decoder) throws -> Swift.Int64?)? = nil,
+        decodeUIntIfNil: ((Decoder) throws -> Swift.UInt?)? = nil,
+        decodeUInt8IfNil: ((Decoder) throws -> Swift.UInt8?)? = nil,
+        decodeUInt16IfNil: ((Decoder) throws -> Swift.UInt16?)? = nil,
+        decodeUInt32IfNil: ((Decoder) throws -> Swift.UInt32?)? = nil,
+        decodeUInt64IfNil: ((Decoder) throws -> Swift.UInt64?)? = nil,
         decodeDecodableIfNil: ((Decodable.Type, Decoder) throws -> Decodable?)? = nil,
-        decodeKey: ((String) -> String)? = nil
+        decodeKey: ((String) -> Swift.String)? = nil
     ) {
         self.decodeNil = decodeNil
         self.decodeBool = decodeBool
@@ -108,21 +108,21 @@ public struct DecodingStrategy {
 
 public extension DecodingStrategy {
     
-    init(nil decode: @escaping (Decoder) throws -> Void) { self.init(decodeNil: decode) }
-    init(_ type: Bool.Type, decode: @escaping (Decoder) throws -> Bool) { self.init(decodeBool: decode) }
-    init(_ type: String.Type, decode: @escaping (Decoder) throws -> String) { self.init(decodeString: decode) }
-    init(_ type: Double.Type, decode: @escaping (Decoder) throws -> Double) { self.init(decodeDouble: decode) }
-    init(_ type: Float.Type, decode: @escaping (Decoder) throws -> Float) { self.init(decodeFloat: decode) }
-    init(_ type: Int.Type, decode: @escaping (Decoder) throws -> Int) { self.init(decodeInt: decode) }
-    init(_ type: Int8.Type, decode: @escaping (Decoder) throws -> Int8) { self.init(decodeInt8: decode) }
-    init(_ type: Int16.Type, decode: @escaping (Decoder) throws -> Int16) { self.init(decodeInt16: decode) }
-    init(_ type: Int32.Type, decode: @escaping (Decoder) throws -> Int32) { self.init(decodeInt32: decode) }
-    init(_ type: Int64.Type, decode: @escaping (Decoder) throws -> Int64) { self.init(decodeInt64: decode) }
-    init(_ type: UInt.Type, decode: @escaping (Decoder) throws -> UInt) { self.init(decodeUInt: decode) }
-    init(_ type: UInt8.Type, decode: @escaping (Decoder) throws -> UInt8) { self.init(decodeUInt8: decode) }
-    init(_ type: UInt16.Type, decode: @escaping (Decoder) throws -> UInt16) { self.init(decodeUInt16: decode) }
-    init(_ type: UInt32.Type, decode: @escaping (Decoder) throws -> UInt32) { self.init(decodeUInt32: decode) }
-    init(_ type: UInt64.Type, decode: @escaping (Decoder) throws -> UInt64) { self.init(decodeUInt64: decode) }
+    init(nil decode: @escaping (Decoder) throws -> Swift.Bool) { self.init(decodeNil: decode) }
+    init(_ type: Swift.Bool.Type, decode: @escaping (Decoder) throws -> Swift.Bool) { self.init(decodeBool: decode) }
+    init(_ type: Swift.String.Type, decode: @escaping (Decoder) throws -> Swift.String) { self.init(decodeString: decode) }
+    init(_ type: Swift.Double.Type, decode: @escaping (Decoder) throws -> Swift.Double) { self.init(decodeDouble: decode) }
+    init(_ type: Swift.Float.Type, decode: @escaping (Decoder) throws -> Swift.Float) { self.init(decodeFloat: decode) }
+    init(_ type: Swift.Int.Type, decode: @escaping (Decoder) throws -> Swift.Int) { self.init(decodeInt: decode) }
+    init(_ type: Swift.Int8.Type, decode: @escaping (Decoder) throws -> Swift.Int8) { self.init(decodeInt8: decode) }
+    init(_ type: Swift.Int16.Type, decode: @escaping (Decoder) throws -> Swift.Int16) { self.init(decodeInt16: decode) }
+    init(_ type: Swift.Int32.Type, decode: @escaping (Decoder) throws -> Swift.Int32) { self.init(decodeInt32: decode) }
+    init(_ type: Swift.Int64.Type, decode: @escaping (Decoder) throws -> Swift.Int64) { self.init(decodeInt64: decode) }
+    init(_ type: Swift.UInt.Type, decode: @escaping (Decoder) throws -> Swift.UInt) { self.init(decodeUInt: decode) }
+    init(_ type: Swift.UInt8.Type, decode: @escaping (Decoder) throws -> Swift.UInt8) { self.init(decodeUInt8: decode) }
+    init(_ type: Swift.UInt16.Type, decode: @escaping (Decoder) throws -> Swift.UInt16) { self.init(decodeUInt16: decode) }
+    init(_ type: Swift.UInt32.Type, decode: @escaping (Decoder) throws -> Swift.UInt32) { self.init(decodeUInt32: decode) }
+    init(_ type: Swift.UInt64.Type, decode: @escaping (Decoder) throws -> Swift.UInt64) { self.init(decodeUInt64: decode) }
     init(decode: @escaping (Decodable.Type, Decoder) throws -> Decodable?) { self.init(decodeDecodable: decode) }
     
     init<T: Decodable>(
@@ -139,20 +139,20 @@ public extension DecodingStrategy {
         )
     }
     
-    init(ifNil type: Bool.Type, decode: @escaping (Decoder) throws -> Bool) { self.init(decodeBoolIfNil: decode) }
-    init(ifNil type: String.Type, decode: @escaping (Decoder) throws -> String) { self.init(decodeStringIfNil: decode) }
-    init(ifNil type: Double.Type, decode: @escaping (Decoder) throws -> Double) { self.init(decodeDoubleIfNil: decode) }
-    init(ifNil type: Float.Type, decode: @escaping (Decoder) throws -> Float) { self.init(decodeFloatIfNil: decode) }
-    init(ifNil type: Int.Type, decode: @escaping (Decoder) throws -> Int) { self.init(decodeIntIfNil: decode) }
-    init(ifNil type: Int8.Type, decode: @escaping (Decoder) throws -> Int8) { self.init(decodeInt8IfNil: decode) }
-    init(ifNil type: Int16.Type, decode: @escaping (Decoder) throws -> Int16) { self.init(decodeInt16IfNil: decode) }
-    init(ifNil type: Int32.Type, decode: @escaping (Decoder) throws -> Int32) { self.init(decodeInt32IfNil: decode) }
-    init(ifNil type: Int64.Type, decode: @escaping (Decoder) throws -> Int64) { self.init(decodeInt64IfNil: decode) }
-    init(ifNil type: UInt.Type, decode: @escaping (Decoder) throws -> UInt) { self.init(decodeUIntIfNil: decode) }
-    init(ifNil type: UInt8.Type, decode: @escaping (Decoder) throws -> UInt8) { self.init(decodeUInt8IfNil: decode) }
-    init(ifNil type: UInt16.Type, decode: @escaping (Decoder) throws -> UInt16) { self.init(decodeUInt16IfNil: decode) }
-    init(ifNil type: UInt32.Type, decode: @escaping (Decoder) throws -> UInt32) { self.init(decodeUInt32IfNil: decode) }
-    init(ifNil type: UInt64.Type, decode: @escaping (Decoder) throws -> UInt64) { self.init(decodeUInt64IfNil: decode) }
+    init(ifNil type: Swift.Bool.Type, decode: @escaping (Decoder) throws -> Swift.Bool?) { self.init(decodeBoolIfNil: decode) }
+    init(ifNil type: Swift.String.Type, decode: @escaping (Decoder) throws -> Swift.String?) { self.init(decodeStringIfNil: decode) }
+    init(ifNil type: Swift.Double.Type, decode: @escaping (Decoder) throws -> Swift.Double?) { self.init(decodeDoubleIfNil: decode) }
+    init(ifNil type: Swift.Float.Type, decode: @escaping (Decoder) throws -> Swift.Float?) { self.init(decodeFloatIfNil: decode) }
+    init(ifNil type: Swift.Int.Type, decode: @escaping (Decoder) throws -> Swift.Int?) { self.init(decodeIntIfNil: decode) }
+    init(ifNil type: Swift.Int8.Type, decode: @escaping (Decoder) throws -> Swift.Int8?) { self.init(decodeInt8IfNil: decode) }
+    init(ifNil type: Swift.Int16.Type, decode: @escaping (Decoder) throws -> Swift.Int16?) { self.init(decodeInt16IfNil: decode) }
+    init(ifNil type: Swift.Int32.Type, decode: @escaping (Decoder) throws -> Swift.Int32?) { self.init(decodeInt32IfNil: decode) }
+    init(ifNil type: Swift.Int64.Type, decode: @escaping (Decoder) throws -> Swift.Int64?) { self.init(decodeInt64IfNil: decode) }
+    init(ifNil type: Swift.UInt.Type, decode: @escaping (Decoder) throws -> Swift.UInt?) { self.init(decodeUIntIfNil: decode) }
+    init(ifNil type: Swift.UInt8.Type, decode: @escaping (Decoder) throws -> Swift.UInt8?) { self.init(decodeUInt8IfNil: decode) }
+    init(ifNil type: Swift.UInt16.Type, decode: @escaping (Decoder) throws -> Swift.UInt16?) { self.init(decodeUInt16IfNil: decode) }
+    init(ifNil type: Swift.UInt32.Type, decode: @escaping (Decoder) throws -> Swift.UInt32?) { self.init(decodeUInt32IfNil: decode) }
+    init(ifNil type: Swift.UInt64.Type, decode: @escaping (Decoder) throws -> Swift.UInt64?) { self.init(decodeUInt64IfNil: decode) }
     init(decodeIfNil: @escaping (Decodable.Type, Decoder) throws -> Decodable?) { self.init(decodeDecodableIfNil: decodeIfNil) }
     
     init<T: Decodable>(

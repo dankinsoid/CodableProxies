@@ -11,12 +11,18 @@ public extension CodingStrategy.Decimal {
     
     static var `default`: CodingStrategy = .Decimal.number
     
-    /// Quoted string
+    /// Coding strategy that encodes a decimal as a strings and tries to decode it from a string if the value is not a number.
     static var string: CodingStrategy {
-        CodingStrategy(Decimal.self) {
+        CodingStrategy(Foundation.Decimal.self) {
             let container = try $0.singleValueContainer()
-            let string = try container.decode(String.self)
-            guard let decimal = Decimal(string: string) else {
+            let string: Swift.String
+            do {
+                string = try container.decode(Swift.String.self)
+            } catch {
+                let double = try container.decode(Swift.Double.self)
+                return Foundation.Decimal(double)
+            }
+            guard let decimal = Foundation.Decimal(string: string) else {
                 throw DecodingError.dataCorruptedError(
                     in: container,
                     debugDescription: "Invalid decimal string: \(string)"
@@ -29,15 +35,23 @@ public extension CodingStrategy.Decimal {
         }
     }
     
-    /// Number
+    /// Coding strategy that encodes a decimal as a number decode it from a number.
     static var number: CodingStrategy {
-        CodingStrategy(Decimal.self) {
+        CodingStrategy(Foundation.Decimal.self) {
             let container = try $0.singleValueContainer()
-            let number = try container.decode(Double.self)
-            return Decimal(number)
+            let number = try container.decode(Swift.Double.self)
+            return Foundation.Decimal(number)
         } encode: { decimal, encoder in
             var container = encoder.singleValueContainer()
             try container.encode((decimal as NSDecimalNumber).doubleValue)
         }
+    }
+    
+    /// Coding strategy that encodes a decimal as a number and tries to decode it from a string if the value is not a number.
+    static var tryDecodeFromString: CodingStrategy {
+        CodingStrategy(
+            decoding: CodingStrategy.Decimal.string.decoding,
+            encoding: CodingStrategy.Decimal.number.encoding
+        )
     }
 }

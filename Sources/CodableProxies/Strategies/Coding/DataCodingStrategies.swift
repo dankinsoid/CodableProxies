@@ -21,10 +21,10 @@ public extension CodingStrategy.Data {
         decodingOptions: Foundation.Data.Base64DecodingOptions = [],
         encodingOptions: Foundation.Data.Base64EncodingOptions = []
     ) -> CodingStrategy {
-        CodingStrategy(Data.self) { decoder in
+        CodingStrategy(Foundation.Data.self) { decoder in
             let container = try decoder.singleValueContainer()
             let base64String = try container.decode(String.self)
-            guard let data = Data(base64Encoded: base64String, options: decodingOptions) else {
+            guard let data = Foundation.Data(base64Encoded: base64String, options: decodingOptions) else {
                 throw DecodingError.dataCorruptedError(
                     in: container,
                     debugDescription: "Invalid base64 string: \(base64String)"

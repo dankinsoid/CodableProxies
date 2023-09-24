@@ -15,7 +15,7 @@ public extension EncodingStrategy.Key {
     static var useDefaultKeys: EncodingStrategy = .Key.custom { $0 }
 
     /// Custom key encoding strategy.
-    static func custom(_ encode: @escaping (String) -> String) -> EncodingStrategy {
+    static func custom(_ encode: @escaping (Swift.String) -> Swift.String) -> EncodingStrategy {
         EncodingStrategy(encodeKey: encode)
     }
 
@@ -25,7 +25,7 @@ public extension EncodingStrategy.Key {
     }
 
     /// Encodes from camelCase to snake_case with a custom separator.
-    static func convertToSnakeCase(separator: String) -> EncodingStrategy {
+    static func convertToSnakeCase(separator: Swift.String) -> EncodingStrategy {
         CodingStrategy.Key.camelCase(separator: separator).encoding
     }
     
@@ -35,7 +35,7 @@ public extension EncodingStrategy.Key {
     }
     
     /// Encodes from snake_case to camelCase with a custom separator.
-    static func convertToCamelCase(separator: String) -> EncodingStrategy {
+    static func convertToCamelCase(separator: Swift.String) -> EncodingStrategy {
         CodingStrategy.Key.snakeCase(separator: separator).encoding
     }
 }

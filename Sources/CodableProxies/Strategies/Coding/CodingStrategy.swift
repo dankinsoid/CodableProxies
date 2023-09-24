@@ -24,3 +24,8 @@ public struct CodingStrategy {
         )
     }
 }
+
+extension CodingStrategy {
+    
+    public static var `default` = CodingStrategy(decoding: .default, encoding: .default)
+}

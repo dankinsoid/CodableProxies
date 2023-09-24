@@ -17,7 +17,7 @@ public extension DecodingStrategy.Data {
     }
     
     /// Base64 string,.
-    static func base64(options: Data.Base64DecodingOptions) -> DecodingStrategy {
+    static func base64(options: Foundation.Data.Base64DecodingOptions) -> DecodingStrategy {
         CodingStrategy.Data.base64(decodingOptions: options).decoding
     }
 }

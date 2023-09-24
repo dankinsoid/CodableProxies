@@ -15,7 +15,7 @@ public extension DecodingStrategy.Key {
     static var useDefaultKeys: DecodingStrategy = .Key.custom { $0 }
 
     /// Custom key decoding strategy.
-    static func custom(_ decode: @escaping (String) -> String) -> DecodingStrategy {
+    static func custom(_ decode: @escaping (Swift.String) -> Swift.String) -> DecodingStrategy {
         DecodingStrategy(decodeKey: decode)
     }
 
@@ -25,7 +25,7 @@ public extension DecodingStrategy.Key {
     }
 
     /// Decodes from camelCase to snake_case with a custom separator.
-    static func convertFromSnakeCase(separator: String) -> DecodingStrategy {
+    static func convertFromSnakeCase(separator: Swift.String) -> DecodingStrategy {
         CodingStrategy.Key.snakeCase(separator: separator).decoding
     }
     
@@ -35,7 +35,7 @@ public extension DecodingStrategy.Key {
     }
     
     /// Decodes from camelCase to snake_case with a custom separator.
-    static func convertFromCamelCase(separator: String) -> DecodingStrategy {
+    static func convertFromCamelCase(separator: Swift.String) -> DecodingStrategy {
         CodingStrategy.Key.camelCase(separator: separator).decoding
     }
 }

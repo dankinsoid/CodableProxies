@@ -28,9 +28,9 @@ public extension EncodingStrategy.Date {
 
     /// Custom date encoding strategy
     static func custom(
-        encode: @escaping (Date, inout SingleValueEncodingContainer) throws -> Void
+        encode: @escaping (Foundation.Date, inout SingleValueEncodingContainer) throws -> Void
     ) -> EncodingStrategy {
-        EncodingStrategy(Date.self) {
+        EncodingStrategy(Foundation.Date.self) {
             var container = $1.singleValueContainer()
             try encode($0, &container)
         }
