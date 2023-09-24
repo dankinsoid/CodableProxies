@@ -53,11 +53,11 @@ struct DecoderWrapper: Decoder {
     }
     
     @inline(__always)
-    func decode<T: Decodable>(_ type: T.Type, decode: () throws -> T) throws -> T {
+    func decode<T: Decodable>(_ type: T.Type, decode: () throws -> DecoderIntrospect<T>) throws -> T {
         if ignoreStrategy != \.decodeDecodable, let result = try strategy.decodeDecodable?(type, ignoring(\.decodeDecodable)) as? T {
             return result
         }
-        return try decode()
+        return try decode().value
     }
     
     @inline(__always)
@@ -81,17 +81,17 @@ struct DecoderWrapper: Decoder {
     }
 
     @inline(__always)
-    func decodeIfPresent<T: Decodable>(present: Bool, decode: () throws -> T?) throws -> T? {
+    func decodeIfPresent<T: Decodable>(present: Bool, decode: () throws -> DecoderIntrospect<T>?) throws -> T? {
         if present {
             if ignoreStrategy != \.decodeDecodable, let decode = strategy.decodeDecodable {
                 return try decode(T.self, ignoring(\.decodeDecodable)) as? T
             } else {
-                return try decode()
+                return try decode()?.value
             }
         } else if ignoreStrategy != \.decodeDecodableIfNil, let decode = strategy.decodeDecodableIfNil {
             return try decode(T.self, ignoring(\.decodeDecodableIfNil)) as? T
         } else {
-            return try decode()
+            return try decode()?.value
         }
     }
     
@@ -124,204 +124,186 @@ private final class KeyedDecodingContainerWrapper<Key: CodingKey>: KeyedDecoding
     }
     
     func decodeNil(forKey key: Key) throws -> Bool {
-        let key = map(key)
-        return try decoder(key).decode(Bool.self, \.decodeNil) { try wrapped.decodeNil(forKey: key) }
+        try decoder(key).decode(Bool.self, \.decodeNil) { try wrapped.decodeNil(forKey: map(key)) }
     }
     
     func decode(_ type: Bool.Type, forKey key: Key) throws -> Bool {
-        let key = map(key)
-        return try decoder(key).decode(type, \.decodeBool) { try wrapped.decode(type, forKey: key) }
+        try decoder(key).decode(type, \.decodeBool) { try wrapped.decode(type, forKey: map(key)) }
     }
     
     func decode(_ type: String.Type, forKey key: Key) throws -> String {
-        let key = map(key)
-        return try decoder(key).decode(type, \.decodeString) { try wrapped.decode(type, forKey: key) }
+        try decoder(key).decode(type, \.decodeString) { try wrapped.decode(type, forKey: map(key)) }
     }
     
     func decode(_ type: Double.Type, forKey key: Key) throws -> Double {
-        let key = map(key)
-        return try decoder(key).decode(type, \.decodeDouble) { try wrapped.decode(type, forKey: key) }
+        try decoder(key).decode(type, \.decodeDouble) { try wrapped.decode(type, forKey: map(key)) }
     }
     
     func decode(_ type: Float.Type, forKey key: Key) throws -> Float {
-        let key = map(key)
-        return try decoder(key).decode(type, \.decodeFloat) { try wrapped.decode(type, forKey: key) }
+        try decoder(key).decode(type, \.decodeFloat) { try wrapped.decode(type, forKey: map(key)) }
     }
     
     func decode(_ type: Int.Type, forKey key: Key) throws -> Int {
-        let key = map(key)
-        return try decoder(key).decode(type, \.decodeInt) { try wrapped.decode(type, forKey: key) }
+        try decoder(key).decode(type, \.decodeInt) { try wrapped.decode(type, forKey: map(key)) }
     }
     
     func decode(_ type: Int8.Type, forKey key: Key) throws -> Int8 {
-        let key = map(key)
-        return try decoder(key).decode(type, \.decodeInt8) { try wrapped.decode(type, forKey: key) }
+        try decoder(key).decode(type, \.decodeInt8) { try wrapped.decode(type, forKey: map(key)) }
     }
     
     func decode(_ type: Int16.Type, forKey key: Key) throws -> Int16 {
-        let key = map(key)
-        return try decoder(key).decode(type, \.decodeInt16) { try wrapped.decode(type, forKey: key) }
+        try decoder(key).decode(type, \.decodeInt16) { try wrapped.decode(type, forKey: map(key)) }
     }
     
     func decode(_ type: Int32.Type, forKey key: Key) throws -> Int32 {
-        let key = map(key)
-        return try decoder(key).decode(type, \.decodeInt32) { try wrapped.decode(type, forKey: key) }
+        try decoder(key).decode(type, \.decodeInt32) { try wrapped.decode(type, forKey: map(key)) }
     }
     
     func decode(_ type: Int64.Type, forKey key: Key) throws -> Int64 {
-        let key = map(key)
-        return try decoder(key).decode(type, \.decodeInt64) { try wrapped.decode(type, forKey: key) }
+        try decoder(key).decode(type, \.decodeInt64) { try wrapped.decode(type, forKey: map(key)) }
     }
     
     func decode(_ type: UInt.Type, forKey key: Key) throws -> UInt {
-        let key = map(key)
-        return try decoder(key).decode(type, \.decodeUInt) { try wrapped.decode(type, forKey: key) }
+        try decoder(key).decode(type, \.decodeUInt) { try wrapped.decode(type, forKey: map(key)) }
     }
     
     func decode(_ type: UInt8.Type, forKey key: Key) throws -> UInt8 {
-        let key = map(key)
-        return try decoder(key).decode(type, \.decodeUInt8) { try wrapped.decode(type, forKey: key) }
+        try decoder(key).decode(type, \.decodeUInt8) { try wrapped.decode(type, forKey: map(key)) }
     }
     
     func decode(_ type: UInt16.Type, forKey key: Key) throws -> UInt16 {
-        let key = map(key)
-        return try decoder(key).decode(type, \.decodeUInt16) { try wrapped.decode(type, forKey: key) }
+        try decoder(key).decode(type, \.decodeUInt16) { try wrapped.decode(type, forKey: map(key)) }
     }
     
     func decode(_ type: UInt32.Type, forKey key: Key) throws -> UInt32 {
-        let key = map(key)
-        return try decoder(key).decode(type, \.decodeUInt32) { try wrapped.decode(type, forKey: key) }
+        try decoder(key).decode(type, \.decodeUInt32) { try wrapped.decode(type, forKey: map(key)) }
     }
     
     func decode(_ type: UInt64.Type, forKey key: Key) throws -> UInt64 {
-        let key = map(key)
-        return try decoder(key).decode(type, \.decodeUInt64) { try wrapped.decode(type, forKey: key) }
+        try decoder(key).decode(type, \.decodeUInt64) { try wrapped.decode(type, forKey: map(key)) }
     }
     
     func decode<T>(_ type: T.Type, forKey key: Key) throws -> T where T : Decodable {
-        let key = map(key)
-        return try decoder(key).decode(type) { try wrapped.decode(type, forKey: key) }
+        try decoder(key).decode(type) { try wrapped.decode(DecoderIntrospect<T>.self, forKey: map(key)) }
     }
     
     func decodeIfPresent(_ type: Bool.Type, forKey key: Key) throws -> Bool? {
-        let key = map(key)
-        return try decoder(key).decodeIfPresent(present: wrapped.contains(key), \.decodeBoolIfNil, \.decodeBool) {
-            try wrapped.decodeIfPresent(type, forKey: key)
+        let anykey = map(key)
+        return try decoder(key).decodeIfPresent(present: wrapped.contains(anykey), \.decodeBoolIfNil, \.decodeBool) {
+            try wrapped.decodeIfPresent(type, forKey: anykey)
         }
     }
     
     func decodeIfPresent(_ type: String.Type, forKey key: Key) throws -> String? {
-        let key = map(key)
-        return try decoder(key).decodeIfPresent(present: wrapped.contains(key), \.decodeStringIfNil, \.decodeString) {
-            try wrapped.decodeIfPresent(type, forKey: key)
+        let anykey = map(key)
+        return try decoder(key).decodeIfPresent(present: wrapped.contains(anykey), \.decodeStringIfNil, \.decodeString) {
+            try wrapped.decodeIfPresent(type, forKey: anykey)
         }
     }
     
     func decodeIfPresent(_ type: Double.Type, forKey key: Key) throws -> Double? {
-        let key = map(key)
-        return try decoder(key).decodeIfPresent(present: wrapped.contains(key), \.decodeDoubleIfNil, \.decodeDouble) {
-            try wrapped.decodeIfPresent(type, forKey: key)
+        let anykey = map(key)
+        return try decoder(key).decodeIfPresent(present: wrapped.contains(anykey), \.decodeDoubleIfNil, \.decodeDouble) {
+            try wrapped.decodeIfPresent(type, forKey: anykey)
         }
     }
     
     func decodeIfPresent(_ type: Float.Type, forKey key: Key) throws -> Float? {
-        let key = map(key)
-        return try decoder(key).decodeIfPresent(present: wrapped.contains(key), \.decodeFloatIfNil, \.decodeFloat) {
-            try wrapped.decodeIfPresent(type, forKey: key)
+        let anykey = map(key)
+        return try decoder(key).decodeIfPresent(present: wrapped.contains(anykey), \.decodeFloatIfNil, \.decodeFloat) {
+            try wrapped.decodeIfPresent(type, forKey: anykey)
         }
     }
     
     func decodeIfPresent(_ type: Int.Type, forKey key: Key) throws -> Int? {
-        let key = map(key)
-        return try decoder(key).decodeIfPresent(present: wrapped.contains(key), \.decodeIntIfNil, \.decodeInt) {
-            try wrapped.decodeIfPresent(type, forKey: key)
+        let anykey = map(key)
+        return try decoder(key).decodeIfPresent(present: wrapped.contains(anykey), \.decodeIntIfNil, \.decodeInt) {
+            try wrapped.decodeIfPresent(type, forKey: anykey)
         }
     }
     
     func decodeIfPresent(_ type: Int8.Type, forKey key: Key) throws -> Int8? {
-        let key = map(key)
-        return try decoder(key).decodeIfPresent(present: wrapped.contains(key), \.decodeInt8IfNil, \.decodeInt8) {
-            try wrapped.decodeIfPresent(type, forKey: key)
+        let anykey = map(key)
+        return try decoder(key).decodeIfPresent(present: wrapped.contains(anykey), \.decodeInt8IfNil, \.decodeInt8) {
+            try wrapped.decodeIfPresent(type, forKey: anykey)
         }
     }
     
     func decodeIfPresent(_ type: Int16.Type, forKey key: Key) throws -> Int16? {
-        let key = map(key)
-        return try decoder(key).decodeIfPresent(present: wrapped.contains(key), \.decodeInt16IfNil, \.decodeInt16) {
-            try wrapped.decodeIfPresent(type, forKey: key)
+        let anykey = map(key)
+        return try decoder(key).decodeIfPresent(present: wrapped.contains(anykey), \.decodeInt16IfNil, \.decodeInt16) {
+            try wrapped.decodeIfPresent(type, forKey: anykey)
         }
     }
     
     func decodeIfPresent(_ type: Int32.Type, forKey key: Key) throws -> Int32? {
-        let key = map(key)
-        return try decoder(key).decodeIfPresent(present: wrapped.contains(key), \.decodeInt32IfNil, \.decodeInt32) {
-            try wrapped.decodeIfPresent(type, forKey: key)
+        let anykey = map(key)
+        return try decoder(key).decodeIfPresent(present: wrapped.contains(anykey), \.decodeInt32IfNil, \.decodeInt32) {
+            try wrapped.decodeIfPresent(type, forKey: anykey)
         }
     }
     
     func decodeIfPresent(_ type: Int64.Type, forKey key: Key) throws -> Int64? {
-        let key = map(key)
-        return try decoder(key).decodeIfPresent(present: wrapped.contains(key), \.decodeInt64IfNil, \.decodeInt64) {
-            try wrapped.decodeIfPresent(type, forKey: key)
+        let anykey = map(key)
+        return try decoder(key).decodeIfPresent(present: wrapped.contains(anykey), \.decodeInt64IfNil, \.decodeInt64) {
+            try wrapped.decodeIfPresent(type, forKey: anykey)
         }
     }
     
     func decodeIfPresent(_ type: UInt.Type, forKey key: Key) throws -> UInt? {
-        let key = map(key)
-        return try decoder(key).decodeIfPresent(present: wrapped.contains(key), \.decodeUIntIfNil, \.decodeUInt) {
-            try wrapped.decodeIfPresent(type, forKey: key)
+        let anykey = map(key)
+        return try decoder(key).decodeIfPresent(present: wrapped.contains(anykey), \.decodeUIntIfNil, \.decodeUInt) {
+            try wrapped.decodeIfPresent(type, forKey: anykey)
         }
     }
     
     func decodeIfPresent(_ type: UInt8.Type, forKey key: Key) throws -> UInt8? {
-        let key = map(key)
-        return try decoder(key).decodeIfPresent(present: wrapped.contains(key), \.decodeUInt8IfNil, \.decodeUInt8) {
-            try wrapped.decodeIfPresent(type, forKey: key)
+        let anykey = map(key)
+        return try decoder(key).decodeIfPresent(present: wrapped.contains(anykey), \.decodeUInt8IfNil, \.decodeUInt8) {
+            try wrapped.decodeIfPresent(type, forKey: anykey)
         }
     }
     
     func decodeIfPresent(_ type: UInt16.Type, forKey key: Key) throws -> UInt16? {
-        let key = map(key)
-        return try decoder(key).decodeIfPresent(present: wrapped.contains(key), \.decodeUInt16IfNil, \.decodeUInt16) {
-            try wrapped.decodeIfPresent(type, forKey: key)
+        let anykey = map(key)
+        return try decoder(key).decodeIfPresent(present: wrapped.contains(anykey), \.decodeUInt16IfNil, \.decodeUInt16) {
+            try wrapped.decodeIfPresent(type, forKey: anykey)
         }
     }
     
     func decodeIfPresent(_ type: UInt32.Type, forKey key: Key) throws -> UInt32? {
-        let key = map(key)
-        return try decoder(key).decodeIfPresent(present: wrapped.contains(key), \.decodeUInt32IfNil, \.decodeUInt32) {
-            try wrapped.decodeIfPresent(type, forKey: key)
+        let anykey = map(key)
+        return try decoder(key).decodeIfPresent(present: wrapped.contains(anykey), \.decodeUInt32IfNil, \.decodeUInt32) {
+            try wrapped.decodeIfPresent(type, forKey: anykey)
         }
     }
     
     func decodeIfPresent(_ type: UInt64.Type, forKey key: Key) throws -> UInt64? {
-        let key = map(key)
-        return try decoder(key).decodeIfPresent(present: wrapped.contains(key), \.decodeUInt64IfNil, \.decodeUInt64) {
-            try wrapped.decodeIfPresent(type, forKey: key)
+        let anykey = map(key)
+        return try decoder(key).decodeIfPresent(present: wrapped.contains(anykey), \.decodeUInt64IfNil, \.decodeUInt64) {
+            try wrapped.decodeIfPresent(type, forKey: anykey)
         }
     }
     
     func decodeIfPresent<T>(_ type: T.Type, forKey key: Key) throws -> T? where T : Decodable {
-        let key = map(key)
-        return try decoder(key).decodeIfPresent(present: wrapped.contains(key)) {
-            try wrapped.decodeIfPresent(type, forKey: key)
+        let anykey = map(key)
+        return try decoder(key).decodeIfPresent(present: wrapped.contains(anykey)) {
+            try wrapped.decodeIfPresent(DecoderIntrospect<T>.self, forKey: anykey)
         }
     }
     
     func nestedContainer<NestedKey>(keyedBy keyType: NestedKey.Type, forKey key: Key) throws -> KeyedDecodingContainer<NestedKey> where NestedKey : CodingKey {
-        let key = map(key)
-        return try KeyedDecodingContainer<NestedKey>(
+        try KeyedDecodingContainer<NestedKey>(
             KeyedDecodingContainerWrapper<NestedKey>(
-                wrapped: wrapped.nestedContainer(keyedBy: AnyCodingKey.self, forKey: key),
+                wrapped: wrapped.nestedContainer(keyedBy: AnyCodingKey.self, forKey: map(key)),
                 decoder: decoder(key)
             )
         )
     }
     
     func nestedUnkeyedContainer(forKey key: Key) throws -> UnkeyedDecodingContainer {
-        let key = map(key)
-        return try UnkeyedDecodingContainerWrapper(
-            wrapped: wrapped.nestedUnkeyedContainer(forKey: key),
+        try UnkeyedDecodingContainerWrapper(
+            wrapped: wrapped.nestedUnkeyedContainer(forKey: map(key)),
             decoder: decoder(key)
         )
     }
@@ -342,11 +324,11 @@ private final class KeyedDecodingContainerWrapper<Key: CodingKey>: KeyedDecoding
     }
     
     @inline(__always)
-    private func decoder(_ key: AnyCodingKey) -> DecoderWrapper {
+    private func decoder(_ key: Key) -> DecoderWrapper {
         DecoderWrapper(
             KeyedContainerDecoder(
                 key: key,
-                base: Ref(self, \.wrapped),
+                base: self,
                 userInfo: _decoder.userInfo
             ),
             strategy: _decoder.strategy
@@ -362,7 +344,7 @@ private final class UnkeyedDecodingContainerWrapper: UnkeyedDecodingContainer {
     var decoder: DecoderWrapper {
         DecoderWrapper(
             UnkeyedContainerDecoder(
-                base: Ref(self, \.wrapped),
+                base: self,
                 userInfo: _decoder.userInfo
             ),
             strategy: _decoder.strategy
@@ -439,7 +421,7 @@ private final class UnkeyedDecodingContainerWrapper: UnkeyedDecodingContainer {
     }
     
     func decode<T>(_ type: T.Type) throws -> T where T : Decodable {
-        try decoder.decode(type) { try wrapped.decode(type) }
+        try decoder.decode(type) { try wrapped.decode(DecoderIntrospect<T>.self) }
     }
     
     func decodeIfPresent(_ type: Bool.Type) throws -> Bool? {
@@ -499,7 +481,7 @@ private final class UnkeyedDecodingContainerWrapper: UnkeyedDecodingContainer {
     }
     
     func decodeIfPresent<T>(_ type: T.Type) throws -> T? where T : Decodable {
-        try decoder.decodeIfPresent(present: !isAtEnd) { try wrapped.decodeIfPresent(type) }
+        try decoder.decodeIfPresent(present: !isAtEnd) { try wrapped.decodeIfPresent(DecoderIntrospect<T>.self) }
     }
     
     func nestedContainer<NestedKey>(keyedBy keyType: NestedKey.Type) throws -> KeyedDecodingContainer<NestedKey> where NestedKey : CodingKey {
@@ -591,15 +573,15 @@ private struct SingleValueDecodingContainerWrapper: SingleValueDecodingContainer
     
     func decode<T: Decodable>(_ type: T.Type) throws -> T {
         try decoder.decode(type) {
-            try wrapped.decode(type)
+            try wrapped.decode(DecoderIntrospect<T>.self)
         }
     }
 }
 
-private struct KeyedContainerDecoder: Decoder, SingleValueDecodingContainer {
+private struct KeyedContainerDecoder<Key: CodingKey>: Decoder, SingleValueDecodingContainer {
     
-    let key: AnyCodingKey
-    @Ref var base: KeyedDecodingContainer<AnyCodingKey>
+    let key: Key
+    let base: KeyedDecodingContainerWrapper<Key>
     let userInfo: [CodingUserInfoKey: Any]
     var codingPath: [CodingKey] { base.codingPath + [key] }
     
@@ -635,7 +617,7 @@ private struct KeyedContainerDecoder: Decoder, SingleValueDecodingContainer {
 
 private struct UnkeyedContainerDecoder: Decoder, SingleValueDecodingContainer {
     
-    @Ref var base: UnkeyedDecodingContainer
+    let base: UnkeyedDecodingContainerWrapper
     let userInfo: [CodingUserInfoKey: Any]
     var codingPath: [CodingKey] { base.codingPath + [AnyCodingKey(intValue: base.currentIndex)] }
     
@@ -651,7 +633,7 @@ private struct UnkeyedContainerDecoder: Decoder, SingleValueDecodingContainer {
         self
     }
     
-    func decodeNil() -> Bool { (try? base.decodeNil()) ?? false }
+    func decodeNil() -> Bool { base.decodeNil() }
     func decode(_ type: Bool.Type) throws -> Bool { try base.decode(type) }
     func decode(_ type: String.Type) throws -> String { try base.decode(type) }
     func decode(_ type: Double.Type) throws -> Double { try base.decode(type) }

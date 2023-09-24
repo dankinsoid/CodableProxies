@@ -53,15 +53,15 @@ struct EncoderWrapper: Encoder {
     }
     
     @inline(__always)
-    func encode(_ value: Encodable, encode: () throws -> Void) throws {
+    func encode(_ value: Encodable, encode: (EncoderIntrospect) throws -> Void) throws {
         if ignoreStrategy != \.encodeEncodable, try strategy.encodeEncodable?(value, ignoring(\.encodeEncodable)) == true {
             return
         }
-        try encode()
+        try encode(EncoderIntrospect(value: value, strategy: strategy))
     }
     
     @inline(__always)
-    func encodeIfPresent<T>(
+    func encodeIfPresent<T: Encodable>(
         _ value: T?,
         _ keyPathIfNil: KeyPath<EncodingStrategy, ((Encoder) throws -> Void)?>,
         _ keyPath: KeyPath<EncodingStrategy, ((T, Encoder) throws -> Void)?>,
@@ -79,7 +79,7 @@ struct EncoderWrapper: Encoder {
     }
     
     @inline(__always)
-    func encodeIfPresent<T: Encodable>(_ value: T?, encode: () throws -> Void) throws {
+    func encodeIfPresent<T: Encodable>(_ value: T?, encode: (EncoderIntrospect?) throws -> Void) throws {
         if let value, ignoreStrategy != \.encodeEncodable {
             try self.encode(value, encode: encode)
             return
@@ -87,7 +87,7 @@ struct EncoderWrapper: Encoder {
         if ignoreStrategy != \.encodeEncodableIfNil, try strategy.encodeEncodableIfNil?(T.self, ignoring(\.encodeEncodableIfNil)) == true {
             return
         }
-        try encode()
+        try encode(value.map { EncoderIntrospect(value: $0, strategy: strategy) })
     }
     
     @inline(__always)
@@ -110,83 +110,67 @@ private final class KeyedEncodingContainerWrapper<Key: CodingKey>: KeyedEncoding
     }
     
     func encodeNil(forKey key: Key) throws {
-        let key = map(key)
-        try encoder(key).encode((), \.encodeNil) { try wrapped.encodeNil(forKey: key) }
+        try encoder(key).encode((), \.encodeNil) { try wrapped.encodeNil(forKey: map(key)) }
     }
     
     func encode(_ value: Bool, forKey key: Key) throws {
-        let key = map(key)
-        try encoder(key).encode(value, \.encodeBool) { try wrapped.encode(value, forKey: key) }
+        try encoder(key).encode(value, \.encodeBool) { try wrapped.encode(value, forKey: map(key)) }
     }
     
     func encode(_ value: String, forKey key: Key) throws {
-        let key = map(key)
-        try encoder(key).encode(value, \.encodeString) { try wrapped.encode(value, forKey: key) }
+        try encoder(key).encode(value, \.encodeString) { try wrapped.encode(value, forKey: map(key)) }
     }
     
     func encode(_ value: Double, forKey key: Key) throws {
-        let key = map(key)
-        try encoder(key).encode(value, \.encodeDouble) { try wrapped.encode(value, forKey: key) }
+        try encoder(key).encode(value, \.encodeDouble) { try wrapped.encode(value, forKey: map(key)) }
     }
     
     func encode(_ value: Float, forKey key: Key) throws {
-        let key = map(key)
-        try encoder(key).encode(value, \.encodeFloat) { try wrapped.encode(value, forKey: key) }
+        try encoder(key).encode(value, \.encodeFloat) { try wrapped.encode(value, forKey: map(key)) }
     }
     
     func encode(_ value: Int, forKey key: Key) throws {
-        let key = map(key)
-        try encoder(key).encode(value, \.encodeInt) { try wrapped.encode(value, forKey: key) }
+        try encoder(key).encode(value, \.encodeInt) { try wrapped.encode(value, forKey: map(key)) }
     }
     
     func encode(_ value: Int8, forKey key: Key) throws {
-        let key = map(key)
-        try encoder(key).encode(value, \.encodeInt8) { try wrapped.encode(value, forKey: key) }
+        try encoder(key).encode(value, \.encodeInt8) { try wrapped.encode(value, forKey: map(key)) }
     }
     
     func encode(_ value: Int16, forKey key: Key) throws {
-        let key = map(key)
-        try encoder(key).encode(value, \.encodeInt16) { try wrapped.encode(value, forKey: key) }
+        try encoder(key).encode(value, \.encodeInt16) { try wrapped.encode(value, forKey: map(key)) }
     }
     
     func encode(_ value: Int32, forKey key: Key) throws {
-        let key = map(key)
-        try encoder(key).encode(value, \.encodeInt32) { try wrapped.encode(value, forKey: key) }
+        try encoder(key).encode(value, \.encodeInt32) { try wrapped.encode(value, forKey: map(key)) }
     }
     
     func encode(_ value: Int64, forKey key: Key) throws {
-        let key = map(key)
-        try encoder(key).encode(value, \.encodeInt64) { try wrapped.encode(value, forKey: key) }
+        try encoder(key).encode(value, \.encodeInt64) { try wrapped.encode(value, forKey: map(key)) }
     }
     
     func encode(_ value: UInt, forKey key: Key) throws {
-        let key = map(key)
-        try encoder(key).encode(value, \.encodeUInt) { try wrapped.encode(value, forKey: key) }
+        try encoder(key).encode(value, \.encodeUInt) { try wrapped.encode(value, forKey: map(key)) }
     }
     
     func encode(_ value: UInt8, forKey key: Key) throws {
-        let key = map(key)
-        try encoder(key).encode(value, \.encodeUInt8) { try wrapped.encode(value, forKey: key) }
+        try encoder(key).encode(value, \.encodeUInt8) { try wrapped.encode(value, forKey: map(key)) }
     }
     
     func encode(_ value: UInt16, forKey key: Key) throws {
-        let key = map(key)
-        try encoder(key).encode(value, \.encodeUInt16) { try wrapped.encode(value, forKey: key) }
+        try encoder(key).encode(value, \.encodeUInt16) { try wrapped.encode(value, forKey: map(key)) }
     }
     
     func encode(_ value: UInt32, forKey key: Key) throws {
-        let key = map(key)
-        try encoder(key).encode(value, \.encodeUInt32) { try wrapped.encode(value, forKey: key) }
+        try encoder(key).encode(value, \.encodeUInt32) { try wrapped.encode(value, forKey: map(key)) }
     }
     
     func encode(_ value: UInt64, forKey key: Key) throws {
-        let key = map(key)
-        try encoder(key).encode(value, \.encodeUInt64) { try wrapped.encode(value, forKey: key) }
+        try encoder(key).encode(value, \.encodeUInt64) { try wrapped.encode(value, forKey: map(key)) }
     }
     
     func encode<T>(_ value: T, forKey key: Key) throws where T : Encodable {
-        let key = map(key)
-        try encoder(key).encode(value) { try wrapped.encode(value, forKey: key) }
+        try encoder(key).encode(value) { try wrapped.encode($0, forKey: map(key)) }
     }
 
     // TODO: customize new methods
@@ -195,94 +179,77 @@ private final class KeyedEncodingContainerWrapper<Key: CodingKey>: KeyedEncoding
 //    }
     
     func encodeIfPresent(_ value: Bool?, forKey key: Key) throws {
-        let key = map(key)
-        try encoder(key).encodeIfPresent(value, \.encodeBoolIfNil, \.encodeBool) { try wrapped.encodeIfPresent(value, forKey: key) }
+        try encoder(key).encodeIfPresent(value, \.encodeBoolIfNil, \.encodeBool) { try wrapped.encodeIfPresent(value, forKey: map(key)) }
     }
     
     func encodeIfPresent(_ value: String?, forKey key: Key) throws {
-        let key = map(key)
-        try encoder(key).encodeIfPresent(value, \.encodeStringIfNil, \.encodeString) { try wrapped.encodeIfPresent(value, forKey: key) }
+        try encoder(key).encodeIfPresent(value, \.encodeStringIfNil, \.encodeString) { try wrapped.encodeIfPresent(value, forKey: map(key)) }
     }
     
     func encodeIfPresent(_ value: Double?, forKey key: Key) throws {
-        let key = map(key)
-        try encoder(key).encodeIfPresent(value, \.encodeDoubleIfNil, \.encodeDouble) { try wrapped.encodeIfPresent(value, forKey: key) }
+        try encoder(key).encodeIfPresent(value, \.encodeDoubleIfNil, \.encodeDouble) { try wrapped.encodeIfPresent(value, forKey: map(key)) }
     }
     
     func encodeIfPresent(_ value: Float?, forKey key: Key) throws {
-        let key = map(key)
-        try encoder(key).encodeIfPresent(value, \.encodeFloatIfNil, \.encodeFloat) { try wrapped.encodeIfPresent(value, forKey: key) }
+        try encoder(key).encodeIfPresent(value, \.encodeFloatIfNil, \.encodeFloat) { try wrapped.encodeIfPresent(value, forKey: map(key)) }
     }
     
     func encodeIfPresent(_ value: Int?, forKey key: Key) throws {
-        let key = map(key)
-        try encoder(key).encodeIfPresent(value, \.encodeIntIfNil, \.encodeInt) { try wrapped.encodeIfPresent(value, forKey: key) }
+        try encoder(key).encodeIfPresent(value, \.encodeIntIfNil, \.encodeInt) { try wrapped.encodeIfPresent(value, forKey: map(key)) }
     }
     
     func encodeIfPresent(_ value: Int8?, forKey key: Key) throws {
-        let key = map(key)
-        try encoder(key).encodeIfPresent(value, \.encodeInt8IfNil, \.encodeInt8) { try wrapped.encodeIfPresent(value, forKey: key) }
+        try encoder(key).encodeIfPresent(value, \.encodeInt8IfNil, \.encodeInt8) { try wrapped.encodeIfPresent(value, forKey: map(key)) }
     }
     
     func encodeIfPresent(_ value: Int16?, forKey key: Key) throws {
-        let key = map(key)
-        try encoder(key).encodeIfPresent(value, \.encodeInt16IfNil, \.encodeInt16) { try wrapped.encodeIfPresent(value, forKey: key) }
+        try encoder(key).encodeIfPresent(value, \.encodeInt16IfNil, \.encodeInt16) { try wrapped.encodeIfPresent(value, forKey: map(key)) }
     }
     
     func encodeIfPresent(_ value: Int32?, forKey key: Key) throws {
-        let key = map(key)
-        try encoder(key).encodeIfPresent(value, \.encodeInt32IfNil, \.encodeInt32) { try wrapped.encodeIfPresent(value, forKey: key) }
+        try encoder(key).encodeIfPresent(value, \.encodeInt32IfNil, \.encodeInt32) { try wrapped.encodeIfPresent(value, forKey: map(key)) }
     }
     
     func encodeIfPresent(_ value: Int64?, forKey key: Key) throws {
-        let key = map(key)
-        try encoder(key).encodeIfPresent(value, \.encodeInt64IfNil, \.encodeInt64) { try wrapped.encodeIfPresent(value, forKey: key) }
+        try encoder(key).encodeIfPresent(value, \.encodeInt64IfNil, \.encodeInt64) { try wrapped.encodeIfPresent(value, forKey: map(key)) }
     }
     
     func encodeIfPresent(_ value: UInt?, forKey key: Key) throws {
-        let key = map(key)
-        try encoder(key).encodeIfPresent(value, \.encodeUIntIfNil, \.encodeUInt) { try wrapped.encodeIfPresent(value, forKey: key) }
+        try encoder(key).encodeIfPresent(value, \.encodeUIntIfNil, \.encodeUInt) { try wrapped.encodeIfPresent(value, forKey: map(key)) }
     }
     
     func encodeIfPresent(_ value: UInt8?, forKey key: Key) throws {
-        let key = map(key)
-        try encoder(key).encodeIfPresent(value, \.encodeUInt8IfNil, \.encodeUInt8) { try wrapped.encodeIfPresent(value, forKey: key) }
+        try encoder(key).encodeIfPresent(value, \.encodeUInt8IfNil, \.encodeUInt8) { try wrapped.encodeIfPresent(value, forKey: map(key)) }
     }
     
     func encodeIfPresent(_ value: UInt16?, forKey key: Key) throws {
-        let key = map(key)
-        try encoder(key).encodeIfPresent(value, \.encodeUInt16IfNil, \.encodeUInt16) { try wrapped.encodeIfPresent(value, forKey: key) }
+        try encoder(key).encodeIfPresent(value, \.encodeUInt16IfNil, \.encodeUInt16) { try wrapped.encodeIfPresent(value, forKey: map(key)) }
     }
     
     func encodeIfPresent(_ value: UInt32?, forKey key: Key) throws {
-        let key = map(key)
-        try encoder(key).encodeIfPresent(value, \.encodeUInt32IfNil, \.encodeUInt32) { try wrapped.encodeIfPresent(value, forKey: key) }
+        try encoder(key).encodeIfPresent(value, \.encodeUInt32IfNil, \.encodeUInt32) { try wrapped.encodeIfPresent(value, forKey: map(key)) }
     }
     
     func encodeIfPresent(_ value: UInt64?, forKey key: Key) throws {
-        let key = map(key)
-        try encoder(key).encodeIfPresent(value, \.encodeUInt64IfNil, \.encodeUInt64) { try wrapped.encodeIfPresent(value, forKey: key) }
+        try encoder(key).encodeIfPresent(value, \.encodeUInt64IfNil, \.encodeUInt64) { try wrapped.encodeIfPresent(value, forKey: map(key)) }
     }
     
     func encodeIfPresent<T>(_ value: T?, forKey key: Key) throws where T : Encodable {
-        let key = map(key)
-        try encoder(key).encodeIfPresent(value) { try wrapped.encodeIfPresent(value, forKey: key) }
+        try encoder(key).encodeIfPresent(value) { try wrapped.encodeIfPresent($0, forKey: map(key)) }
     }
 
     func nestedContainer<NestedKey>(keyedBy keyType: NestedKey.Type, forKey key: Key) -> KeyedEncodingContainer<NestedKey> where NestedKey : CodingKey {
-        let key = map(key)
-        return KeyedEncodingContainer<NestedKey>(
+        KeyedEncodingContainer<NestedKey>(
             KeyedEncodingContainerWrapper<NestedKey>(
-                wrapped: wrapped.nestedContainer(keyedBy: AnyCodingKey.self, forKey: key),
+                wrapped: wrapped.nestedContainer(keyedBy: AnyCodingKey.self, forKey: map(key)),
                 encoder: encoder(key)
             )
         )
     }
     
     func nestedUnkeyedContainer(forKey key: Key) -> UnkeyedEncodingContainer {
-        let key = map(key)
-        return UnkeyedEncodingContainerWrapper(
-            wrapped: wrapped.nestedUnkeyedContainer(forKey: key),
+        UnkeyedEncodingContainerWrapper(
+            wrapped: wrapped.nestedUnkeyedContainer(forKey: map(key)),
             encoder: encoder(key)
         )
     }
@@ -303,11 +270,11 @@ private final class KeyedEncodingContainerWrapper<Key: CodingKey>: KeyedEncoding
     }
     
     @inline(__always)
-    private func encoder(_ key: AnyCodingKey) -> EncoderWrapper {
+    private func encoder(_ key: Key) -> EncoderWrapper {
         EncoderWrapper(
             KeyedContainerEncoder(
                 key: key,
-                base: Ref(self, \.wrapped),
+                base: self,
                 userInfo: _encoder.userInfo
             ),
             strategy: _encoder.strategy
@@ -323,7 +290,7 @@ private final class UnkeyedEncodingContainerWrapper: UnkeyedEncodingContainer {
     var encoder: EncoderWrapper {
         EncoderWrapper(
             UnkeyedContainerEncoder(
-                base: Ref(self, \.wrapped),
+                base: self,
                 userInfo: _encoder.userInfo
             ),
             strategy: _encoder.strategy
@@ -398,7 +365,7 @@ private final class UnkeyedEncodingContainerWrapper: UnkeyedEncodingContainer {
     }
     
     func encode<T>(_ value: T) throws where T : Encodable {
-        try encoder.encode(value) { try wrapped.encode(value) }
+        try encoder.encode(value) { try wrapped.encode($0) }
     }
     
     // TODO: customize new methods
@@ -555,17 +522,23 @@ private struct SingleValueEncodingContainerWrapper: SingleValueEncodingContainer
     
     mutating func encode<T: Encodable>(_ value: T) throws {
         try encoder.encode(value) {
-            try wrapped.encode(value)
+            try wrapped.encode($0)
         }
     }
 }
 
-private struct KeyedContainerEncoder: Encoder, SingleValueEncodingContainer {
+private struct KeyedContainerEncoder<Key: CodingKey>: Encoder, SingleValueEncodingContainer {
     
-    let key: AnyCodingKey
-    @Ref var base: KeyedEncodingContainer<AnyCodingKey>
+    let key: Key
+    let base: KeyedEncodingContainerWrapper<Key>
     let userInfo: [CodingUserInfoKey: Any]
     var codingPath: [CodingKey] { base.codingPath + [key] }
+    
+    init(key: Key, base: KeyedEncodingContainerWrapper<Key>, userInfo: [CodingUserInfoKey : Any]) {
+        self.key = key
+        self.base = base
+        self.userInfo = userInfo
+    }
     
     func container<Key>(keyedBy type: Key.Type) -> KeyedEncodingContainer<Key> where Key : CodingKey {
         base.nestedContainer(keyedBy: type, forKey: key)
@@ -599,7 +572,7 @@ private struct KeyedContainerEncoder: Encoder, SingleValueEncodingContainer {
 
 private struct UnkeyedContainerEncoder: Encoder, SingleValueEncodingContainer {
     
-    @Ref var base: UnkeyedEncodingContainer
+    let base: UnkeyedEncodingContainerWrapper
     let userInfo: [CodingUserInfoKey: Any]
     var codingPath: [CodingKey] { base.codingPath + [AnyCodingKey(intValue: base.count)] }
     

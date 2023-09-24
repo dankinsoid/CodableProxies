@@ -48,7 +48,7 @@ struct TestStruct: Encodable {
     var embedded: EmbeddedStruct?
 }
 
-struct EmbeddedStruct: Encodable {
+struct EmbeddedStruct: Codable {
     
     var int: Int
     var string: String
@@ -58,4 +58,17 @@ struct EmbeddedStruct: Encodable {
     var url: URL?
     var bool: Bool?
     var keyWithCustomEncoding: String
+    
+    func encode(to encoder: Encoder) throws {
+        print(encoder)
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(int, forKey: .int)
+        try container.encode(string, forKey: .string)
+        try container.encode(decimal, forKey: .decimal)
+        try container.encode(date, forKey: .date)
+        try container.encode(optionalInt, forKey: .optionalInt)
+        try container.encode(url, forKey: .url)
+        try container.encode(bool, forKey: .bool)
+        try container.encode(keyWithCustomEncoding, forKey: .keyWithCustomEncoding)
+    }
 }

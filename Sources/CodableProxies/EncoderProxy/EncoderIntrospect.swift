@@ -7,7 +7,7 @@ public struct EncoderIntrospect: Encodable {
     
     public func encode(to encoder: Encoder) throws {
         let encoder = EncoderWrapper(encoder, strategy: strategy)
-        try encoder.encode(value) {
+        try encoder.encode(value) { _ in
             try value.encode(to: encoder)
         }
     }
