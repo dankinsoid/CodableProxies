@@ -171,46 +171,46 @@ public extension DecodingStrategy {
     
     func merging(with other: DecodingStrategy) -> DecodingStrategy {
         DecodingStrategy(
-            decodeNil: self.decodeNil ?? other.decodeNil,
-            decodeBool: self.decodeBool ?? other.decodeBool,
-            decodeString: self.decodeString ?? other.decodeString,
-            decodeDouble: self.decodeDouble ?? other.decodeDouble,
-            decodeFloat: self.decodeFloat ?? other.decodeFloat,
-            decodeInt: self.decodeInt ?? other.decodeInt,
-            decodeInt8: self.decodeInt8 ?? other.decodeInt8,
-            decodeInt16: self.decodeInt16 ?? other.decodeInt16,
-            decodeInt32: self.decodeInt32 ?? other.decodeInt32,
-            decodeInt64: self.decodeInt64 ?? other.decodeInt64,
-            decodeUInt: self.decodeUInt ?? other.decodeUInt,
-            decodeUInt8: self.decodeUInt8 ?? other.decodeUInt8,
-            decodeUInt16: self.decodeUInt16 ?? other.decodeUInt16,
-            decodeUInt32: self.decodeUInt32 ?? other.decodeUInt32,
-            decodeUInt64: self.decodeUInt64 ?? other.decodeUInt64,
-            decodeDecodable: self.decodeDecodable.map { decodeDecodable in
+            decodeNil: other.decodeNil ?? decodeNil,
+            decodeBool: other.decodeBool ?? decodeBool,
+            decodeString: other.decodeString ?? decodeString,
+            decodeDouble: other.decodeDouble ?? decodeDouble,
+            decodeFloat: other.decodeFloat ?? decodeFloat,
+            decodeInt: other.decodeInt ?? decodeInt,
+            decodeInt8: other.decodeInt8 ?? decodeInt8,
+            decodeInt16: other.decodeInt16 ?? decodeInt16,
+            decodeInt32: other.decodeInt32 ?? decodeInt32,
+            decodeInt64: other.decodeInt64 ?? decodeInt64,
+            decodeUInt: other.decodeUInt ?? decodeUInt,
+            decodeUInt8: other.decodeUInt8 ?? decodeUInt8,
+            decodeUInt16: other.decodeUInt16 ?? decodeUInt16,
+            decodeUInt32: other.decodeUInt32 ?? decodeUInt32,
+            decodeUInt64: other.decodeUInt64 ?? decodeUInt64,
+            decodeDecodable: other.decodeDecodable.map { decodeDecodable in
                 {
-                    try decodeDecodable($0, $1) ?? other.decodeDecodable?($0, $1)
+                    try decodeDecodable($0, $1) ?? self.decodeDecodable?($0, $1)
                 }
-            } ?? other.decodeDecodable,
-            decodeBoolIfNil: self.decodeBoolIfNil ?? other.decodeBoolIfNil,
-            decodeStringIfNil: self.decodeStringIfNil ?? other.decodeStringIfNil,
-            decodeDoubleIfNil: self.decodeDoubleIfNil ?? other.decodeDoubleIfNil,
-            decodeFloatIfNil: self.decodeFloatIfNil ?? other.decodeFloatIfNil,
-            decodeIntIfNil: self.decodeIntIfNil ?? other.decodeIntIfNil,
-            decodeInt8IfNil: self.decodeInt8IfNil ?? other.decodeInt8IfNil,
-            decodeInt16IfNil: self.decodeInt16IfNil ?? other.decodeInt16IfNil,
-            decodeInt32IfNil: self.decodeInt32IfNil ?? other.decodeInt32IfNil,
-            decodeInt64IfNil: self.decodeInt64IfNil ?? other.decodeInt64IfNil,
-            decodeUIntIfNil: self.decodeUIntIfNil ?? other.decodeUIntIfNil,
-            decodeUInt8IfNil: self.decodeUInt8IfNil ?? other.decodeUInt8IfNil,
-            decodeUInt16IfNil: self.decodeUInt16IfNil ?? other.decodeUInt16IfNil,
-            decodeUInt32IfNil: self.decodeUInt32IfNil ?? other.decodeUInt32IfNil,
-            decodeUInt64IfNil: self.decodeUInt64IfNil ?? other.decodeUInt64IfNil,
-            decodeDecodableIfNil: self.decodeDecodableIfNil.map { decodeDecodableIfNil in
+            } ?? decodeDecodable,
+            decodeBoolIfNil: other.decodeBoolIfNil ?? decodeBoolIfNil,
+            decodeStringIfNil: other.decodeStringIfNil ?? decodeStringIfNil,
+            decodeDoubleIfNil: other.decodeDoubleIfNil ?? decodeDoubleIfNil,
+            decodeFloatIfNil: other.decodeFloatIfNil ?? decodeFloatIfNil,
+            decodeIntIfNil: other.decodeIntIfNil ?? decodeIntIfNil,
+            decodeInt8IfNil: other.decodeInt8IfNil ?? decodeInt8IfNil,
+            decodeInt16IfNil: other.decodeInt16IfNil ?? decodeInt16IfNil,
+            decodeInt32IfNil: other.decodeInt32IfNil ?? decodeInt32IfNil,
+            decodeInt64IfNil: other.decodeInt64IfNil ?? decodeInt64IfNil,
+            decodeUIntIfNil: other.decodeUIntIfNil ?? decodeUIntIfNil,
+            decodeUInt8IfNil: other.decodeUInt8IfNil ?? decodeUInt8IfNil,
+            decodeUInt16IfNil: other.decodeUInt16IfNil ?? decodeUInt16IfNil,
+            decodeUInt32IfNil: other.decodeUInt32IfNil ?? decodeUInt32IfNil,
+            decodeUInt64IfNil: other.decodeUInt64IfNil ?? decodeUInt64IfNil,
+            decodeDecodableIfNil: other.decodeDecodableIfNil.map { decodeDecodableIfNil in
                 {
-                    try decodeDecodableIfNil($0, $1) ?? other.decodeDecodableIfNil?($0, $1)
+                    try decodeDecodableIfNil($0, $1) ?? self.decodeDecodableIfNil?($0, $1)
                 }
-            } ?? other.decodeDecodableIfNil,
-            decodeKey: self.decodeKey ?? other.decodeKey
+            } ?? decodeDecodableIfNil,
+            decodeKey: other.decodeKey ?? decodeKey
         )
     }
 }

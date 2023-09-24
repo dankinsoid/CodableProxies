@@ -20,22 +20,22 @@ public extension EncodingStrategy.Key {
     }
 
     /// Encodes from camelCase to snake_case.
-    static var convertToSnakeCase: EncodingStrategy {
-        CodingStrategy.Key.camelCase.encoding
+    static var toSnakeCase: EncodingStrategy {
+        CodingStrategy.Key.encodeToSnakeCaseDecodeFromCamelCase.encoding
     }
 
     /// Encodes from camelCase to snake_case with a custom separator.
-    static func convertToSnakeCase(separator: Swift.String) -> EncodingStrategy {
-        CodingStrategy.Key.camelCase(separator: separator).encoding
+    static func toSnakeCase(separator: Swift.String) -> EncodingStrategy {
+        CodingStrategy.Key.encodeToSnakeCaseDecodeFromCamelCase(separator: separator).encoding
     }
     
     /// Encodes from snake_case to camelCase.
-    static var convertToCamelCase: EncodingStrategy {
-        CodingStrategy.Key.snakeCase.encoding
+    static var toCamelCase: EncodingStrategy {
+        CodingStrategy.Key.encodeToCamelCaseDecodeFromSnakeCase.encoding
     }
     
     /// Encodes from snake_case to camelCase with a custom separator.
-    static func convertToCamelCase(separator: Swift.String) -> EncodingStrategy {
-        CodingStrategy.Key.snakeCase(separator: separator).encoding
+    static func toCamelCase(separator: Swift.String) -> EncodingStrategy {
+        CodingStrategy.Key.encodeToCamelCaseDecodeFromSnakeCase(separator: separator).encoding
     }
 }

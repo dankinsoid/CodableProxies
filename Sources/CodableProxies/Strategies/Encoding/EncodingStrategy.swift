@@ -173,58 +173,58 @@ public extension EncodingStrategy {
     
     func merging(with other: EncodingStrategy) -> EncodingStrategy {
         EncodingStrategy(
-            encodeNil: self.encodeNil ?? other.encodeNil,
-            encodeBool: self.encodeBool ?? other.encodeBool,
-            encodeString: self.encodeString ?? other.encodeString,
-            encodeDouble: self.encodeDouble ?? other.encodeDouble,
-            encodeFloat: self.encodeFloat ?? other.encodeFloat,
-            encodeInt: self.encodeInt ?? other.encodeInt,
-            encodeInt8: self.encodeInt8 ?? other.encodeInt8,
-            encodeInt16: self.encodeInt16 ?? other.encodeInt16,
-            encodeInt32: self.encodeInt32 ?? other.encodeInt32,
-            encodeInt64: self.encodeInt64 ?? other.encodeInt64,
-            encodeUInt: self.encodeUInt ?? other.encodeUInt,
-            encodeUInt8: self.encodeUInt8 ?? other.encodeUInt8,
-            encodeUInt16: self.encodeUInt16 ?? other.encodeUInt16,
-            encodeUInt32: self.encodeUInt32 ?? other.encodeUInt32,
-            encodeUInt64: self.encodeUInt64 ?? other.encodeUInt64,
-            encodeEncodable: self.encodeEncodable.map { encodeEncodable in
+            encodeNil: other.encodeNil ?? encodeNil,
+            encodeBool: other.encodeBool ?? encodeBool,
+            encodeString: other.encodeString ?? encodeString,
+            encodeDouble: other.encodeDouble ?? encodeDouble,
+            encodeFloat: other.encodeFloat ?? encodeFloat,
+            encodeInt: other.encodeInt ?? encodeInt,
+            encodeInt8: other.encodeInt8 ?? encodeInt8,
+            encodeInt16: other.encodeInt16 ?? encodeInt16,
+            encodeInt32: other.encodeInt32 ?? encodeInt32,
+            encodeInt64: other.encodeInt64 ?? encodeInt64,
+            encodeUInt: other.encodeUInt ?? encodeUInt,
+            encodeUInt8: other.encodeUInt8 ?? encodeUInt8,
+            encodeUInt16: other.encodeUInt16 ?? encodeUInt16,
+            encodeUInt32: other.encodeUInt32 ?? encodeUInt32,
+            encodeUInt64: other.encodeUInt64 ?? encodeUInt64,
+            encodeEncodable: other.encodeEncodable.map { encodeEncodable in
                 {
                     if try encodeEncodable($0, $1) {
                         return true
                     }
-                    if let encode = other.encodeEncodable {
+                    if let encode = self.encodeEncodable {
                         return try encode($0, $1)
                     }
                     return false
                 }
-            } ?? other.encodeEncodable,
-            encodeBoolIfNil: self.encodeBoolIfNil ?? other.encodeBoolIfNil,
-            encodeStringIfNil: self.encodeStringIfNil ?? other.encodeStringIfNil,
-            encodeDoubleIfNil: self.encodeDoubleIfNil ?? other.encodeDoubleIfNil,
-            encodeFloatIfNil: self.encodeFloatIfNil ?? other.encodeFloatIfNil,
-            encodeIntIfNil: self.encodeIntIfNil ?? other.encodeIntIfNil,
-            encodeInt8IfNil: self.encodeInt8IfNil ?? other.encodeInt8IfNil,
-            encodeInt16IfNil: self.encodeInt16IfNil ?? other.encodeInt16IfNil,
-            encodeInt32IfNil: self.encodeInt32IfNil ?? other.encodeInt32IfNil,
-            encodeInt64IfNil: self.encodeInt64IfNil ?? other.encodeInt64IfNil,
-            encodeUIntIfNil: self.encodeUIntIfNil ?? other.encodeUIntIfNil,
-            encodeUInt8IfNil: self.encodeUInt8IfNil ?? other.encodeUInt8IfNil,
-            encodeUInt16IfNil: self.encodeUInt16IfNil ?? other.encodeUInt16IfNil,
-            encodeUInt32IfNil: self.encodeUInt32IfNil ?? other.encodeUInt32IfNil,
-            encodeUInt64IfNil: self.encodeUInt64IfNil ?? other.encodeUInt64IfNil,
-            encodeEncodableIfNil: self.encodeEncodableIfNil.map { encodeEncodableIfNil in
+            } ?? encodeEncodable,
+            encodeBoolIfNil: other.encodeBoolIfNil ?? encodeBoolIfNil,
+            encodeStringIfNil: other.encodeStringIfNil ?? encodeStringIfNil,
+            encodeDoubleIfNil: other.encodeDoubleIfNil ?? encodeDoubleIfNil,
+            encodeFloatIfNil: other.encodeFloatIfNil ?? encodeFloatIfNil,
+            encodeIntIfNil: other.encodeIntIfNil ?? encodeIntIfNil,
+            encodeInt8IfNil: other.encodeInt8IfNil ?? encodeInt8IfNil,
+            encodeInt16IfNil: other.encodeInt16IfNil ?? encodeInt16IfNil,
+            encodeInt32IfNil: other.encodeInt32IfNil ?? encodeInt32IfNil,
+            encodeInt64IfNil: other.encodeInt64IfNil ?? encodeInt64IfNil,
+            encodeUIntIfNil: other.encodeUIntIfNil ?? encodeUIntIfNil,
+            encodeUInt8IfNil: other.encodeUInt8IfNil ?? encodeUInt8IfNil,
+            encodeUInt16IfNil: other.encodeUInt16IfNil ?? encodeUInt16IfNil,
+            encodeUInt32IfNil: other.encodeUInt32IfNil ?? encodeUInt32IfNil,
+            encodeUInt64IfNil: other.encodeUInt64IfNil ?? encodeUInt64IfNil,
+            encodeEncodableIfNil: other.encodeEncodableIfNil.map { encodeEncodableIfNil in
                 {
                     if try encodeEncodableIfNil($0, $1) {
                         return true
                     }
-                    if let encode = other.encodeEncodableIfNil {
+                    if let encode = self.encodeEncodableIfNil {
                         return try encode($0, $1)
                     }
                     return false
                 }
-            } ?? other.encodeEncodableIfNil,
-            encodeKey: self.encodeKey ?? other.encodeKey
+            } ?? encodeEncodableIfNil,
+            encodeKey: other.encodeKey ?? encodeKey
         )
     }
 }

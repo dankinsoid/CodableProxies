@@ -17,8 +17,8 @@ public extension DecodingStrategy.Date {
     }
 
     /// the date-time notation as defined by RFC 3339, section 5.6, for example, 2017-07-21T17:32:28Z.
-    static var iso860: DecodingStrategy {
-        CodingStrategy.Date.iso860.decoding
+    static var iso8601: DecodingStrategy {
+        CodingStrategy.Date.iso8601.decoding
     }
 
     /// the interval between the date value and 00:00:00 UTC on 1 January 1970.

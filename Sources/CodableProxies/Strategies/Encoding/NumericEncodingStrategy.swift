@@ -9,7 +9,7 @@ public extension EncodingStrategy {
 
 public extension EncodingStrategy.Numeric {
     
-    /// Numeric coding strategy that encodes numbers as strings.
+    /// Numeric encoding strategy that encodes numbers as strings.
     static var string: EncodingStrategy {
         EncodingStrategy(
             encodeDouble: { try encodeToString($0, $1) },

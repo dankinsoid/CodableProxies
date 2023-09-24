@@ -9,7 +9,7 @@ public extension CodingStrategy {
 
 public extension CodingStrategy.Date {
     
-    static var `default`: CodingStrategy = .Date.iso860
+    static var `default`: CodingStrategy = .Date.iso8601
 
     /// full-date notation as defined by RFC 3339, section 5.6, for example, 2017-07-21.
     static var date: CodingStrategy {
@@ -28,7 +28,7 @@ public extension CodingStrategy.Date {
     }
 
     /// the date-time notation as defined by RFC 3339, section 5.6, for example, 2017-07-21T17:32:28Z.
-    static var iso860: CodingStrategy {
+    static var iso8601: CodingStrategy {
         .Date.custom { container in
             let date = try isoFormatter.date(from: container.decode(Swift.String.self))
             guard let date else {
@@ -74,11 +74,9 @@ extension CodingStrategy.Date {
     }
 }
 
-private let isoFormatter: DateFormatter = {
-    let formatter = DateFormatter()
-    formatter.locale = Locale(identifier: "en_US_POSIX")
-    formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
-    formatter.timeZone = TimeZone(secondsFromGMT: 0)
+private let isoFormatter: ISO8601DateFormatter = {
+    let formatter = ISO8601DateFormatter()
+    formatter.formatOptions.insert(.withFractionalSeconds)
     return formatter
 }()
 

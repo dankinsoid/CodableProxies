@@ -11,8 +11,7 @@ public struct DecoderProxy<Source>: ValueDecoder {
     }
     
     public func decode<T: Decodable>(_ type: T.Type, from source: Source) throws -> T {
-        DecodingStrategy.current = strategy
-        return try decoder.decode(DecoderIntrospect<T>.self, from: source).value
+        try decoder.decode(DecoderIntrospect<T>.self, from: source).decode(strategy: strategy)
     }
     
     public func decode<T: Decodable>(from source: Source) throws -> T {

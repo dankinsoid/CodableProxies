@@ -3,12 +3,26 @@ import XCTest
 
 final class EncoderProxyTests: XCTestCase {
     
-    func testEncoderProxy() throws {
+    func test_EncoderProxy() throws {
         let jsonEncoder = JSONEncoder()
-        jsonEncoder.outputFormatting = [.prettyPrinted, .sortedKeys]
+        jsonEncoder.outputFormatting = [.prettyPrinted, .sortedKeys, .withoutEscapingSlashes]
         let encoder = EncoderProxy(
             jsonEncoder,
-            strategy: [.Decimal.string, .Numeric.string, .Bool.string, .Date.timestamp]
+            strategy: [
+                .default,
+                .Decimal.string,
+                .Numeric.string,
+                .Bool.string,
+                .Key.toSnakeCase,
+                .Optional.null,
+                EncodingStrategy(encodeIfNil: { type, encoder in
+                    guard type is any Sequence.Type else {
+                        return false
+                    }
+                    _ = encoder.unkeyedContainer()
+                    return true
+                })
+            ]
         )
         let testStruct = TestStruct(
             int: 1,
@@ -28,14 +42,15 @@ final class EncoderProxyTests: XCTestCase {
                 url: URL(string: "https://www.google.com"),
                 bool: true,
                 keyWithCustomEncoding: "keyWithCustomEncoding"
-            )
+            ),
+            optionalArray: nil
         )
         let encoded = try encoder.encode(testStruct)
         print(String(data: encoded, encoding: .utf8) ?? "")
     }
 }
 
-struct TestStruct: Encodable {
+struct TestStruct: Codable, Equatable {
     
     var int: Int
     var string: String
@@ -46,9 +61,10 @@ struct TestStruct: Encodable {
     var bool: Bool?
     var keyWithCustomEncoding: String
     var embedded: EmbeddedStruct?
+    var optionalArray: [Int]?
 }
 
-struct EmbeddedStruct: Codable {
+struct EmbeddedStruct: Codable, Equatable {
     
     var int: Int
     var string: String
@@ -58,17 +74,4 @@ struct EmbeddedStruct: Codable {
     var url: URL?
     var bool: Bool?
     var keyWithCustomEncoding: String
-    
-    func encode(to encoder: Encoder) throws {
-        print(encoder)
-        var container = encoder.container(keyedBy: CodingKeys.self)
-        try container.encode(int, forKey: .int)
-        try container.encode(string, forKey: .string)
-        try container.encode(decimal, forKey: .decimal)
-        try container.encode(date, forKey: .date)
-        try container.encode(optionalInt, forKey: .optionalInt)
-        try container.encode(url, forKey: .url)
-        try container.encode(bool, forKey: .bool)
-        try container.encode(keyWithCustomEncoding, forKey: .keyWithCustomEncoding)
-    }
 }

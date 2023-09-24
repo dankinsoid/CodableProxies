@@ -20,22 +20,22 @@ public extension DecodingStrategy.Key {
     }
 
     /// Decodes from snake_case to camelCase.
-    static var convertFromSnakeCase: DecodingStrategy {
-        CodingStrategy.Key.snakeCase.decoding
+    static var fromSnakeCase: DecodingStrategy {
+        CodingStrategy.Key.encodeToCamelCaseDecodeFromSnakeCase.decoding
     }
 
     /// Decodes from camelCase to snake_case with a custom separator.
-    static func convertFromSnakeCase(separator: Swift.String) -> DecodingStrategy {
-        CodingStrategy.Key.snakeCase(separator: separator).decoding
+    static func fromSnakeCase(separator: Swift.String) -> DecodingStrategy {
+        CodingStrategy.Key.encodeToCamelCaseDecodeFromSnakeCase(separator: separator).decoding
     }
     
     /// Decodes from camelCase to snake_case .
-    static var convertFromCamelCase: DecodingStrategy {
-        CodingStrategy.Key.camelCase.decoding
+    static var fromCamelCase: DecodingStrategy {
+        CodingStrategy.Key.encodeToSnakeCaseDecodeFromCamelCase.decoding
     }
     
     /// Decodes from camelCase to snake_case with a custom separator.
-    static func convertFromCamelCase(separator: Swift.String) -> DecodingStrategy {
-        CodingStrategy.Key.camelCase(separator: separator).decoding
+    static func fromCamelCase(separator: Swift.String) -> DecodingStrategy {
+        CodingStrategy.Key.encodeToSnakeCaseDecodeFromCamelCase(separator: separator).decoding
     }
 }

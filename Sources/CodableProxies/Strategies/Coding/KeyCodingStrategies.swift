@@ -27,13 +27,13 @@ public extension CodingStrategy.Key {
         )
     }
     
-    /// Encodes from camelCase to snake_case.
-    static var snakeCase: CodingStrategy {
-        .Key.snakeCase(separator: "_")
+    /// Encodes from camelCase to snake_case with and decode from snake_case to camelCase.
+    static var encodeToSnakeCaseDecodeFromCamelCase: CodingStrategy {
+        .Key.encodeToSnakeCaseDecodeFromCamelCase(separator: "_")
     }
     
-    /// Encodes from camelCase to snake_case with a custom separator.
-    static func snakeCase(separator: Swift.String) -> CodingStrategy {
+    /// Encodes from camelCase to snake_case with and decode from snake_case to camelCase a custom separator.
+    static func encodeToSnakeCaseDecodeFromCamelCase(separator: Swift.String) -> CodingStrategy {
         .Key.custom {
             $0.fromSnakeCase(separator: CharacterSet(charactersIn: separator))
         } encode: {
@@ -42,13 +42,13 @@ public extension CodingStrategy.Key {
     }
     
     
-    /// Encodes from snake_case to camelCase.
-    static var camelCase: CodingStrategy {
-        .Key.camelCase(separator: "_")
+    /// Encodes from snake_case camelCase to with and decode from camelCase to snake_case.
+    static var encodeToCamelCaseDecodeFromSnakeCase: CodingStrategy {
+        .Key.encodeToCamelCaseDecodeFromSnakeCase(separator: "_")
     }
     
     /// Encodes from snake_case to camelCase with a custom separator.
-    static func camelCase(separator: Swift.String) -> CodingStrategy {
+    static func encodeToCamelCaseDecodeFromSnakeCase(separator: Swift.String) -> CodingStrategy {
         .Key.custom {
             $0.toSnakeCase(separator: separator)
         } encode: {

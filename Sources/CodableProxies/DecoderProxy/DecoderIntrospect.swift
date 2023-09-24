@@ -1,22 +1,22 @@
 import Foundation
 
-extension DecodingStrategy {
-    
-    static var current: DecodingStrategy = .default
-}
-
 struct DecoderIntrospect<Value: Decodable>: Decodable {
     
-    let value: Value
-    
-    init(_ value: Value) {
-        self.value = value
-    }
+    let decoder: Decoder
+    private var value: Value?
     
     init(from decoder: Decoder) throws {
-        let decoder = DecoderWrapper(decoder, strategy: .current)
-        value = try decoder.decode(Value.self) {
-            try DecoderIntrospect(Value(from: decoder))
+        self.decoder = decoder
+    }
+    
+    func decode(strategy: DecodingStrategy) throws -> Value {
+        if let value { return value }
+        let decoderWrapper = DecoderWrapper(decoder, strategy: strategy)
+        return try decoderWrapper.decode(Value.self) {
+            let value = try Value(from: decoderWrapper)
+            var result = self
+            result.value = value
+            return result
         }
     }
 }
