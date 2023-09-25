@@ -9,28 +9,48 @@ public extension CodingStrategy {
 
 public extension CodingStrategy.Date {
     
-    static var `default`: CodingStrategy = .Date.iso8601
+    static var `default`: CodingStrategy = .Date.timestamp
 
-    /// full-date notation as defined by RFC 3339, section 5.6, for example, 2017-07-21.
+    /// ISO 8601 full-date notation as defined by RFC 3339, section 5.6, for example, 2017-07-21.
     static var date: CodingStrategy {
-        .Date.custom { container in
-            let date = try CodingStrategy.Date.dateFormatter.date(from: container.decode(Swift.String.self))
-            guard let date else {
-                throw DecodingError.dataCorruptedError(
-                    in: container,
-                    debugDescription: "Invalid date format."
-                )
-            }
-            return date
-        } encode: { date, container in
-            try container.encode(CodingStrategy.Date.dateFormatter.string(from: date))
-        }
+        .Date.iso8601([.withFullDate, .withDashSeparatorInDate])
+    }
+    
+    /// ISO 8601 date-time notation as defined by RFC 3339, for example, 2016-06-13T16:00:00+00:00.
+    static var iso8601: CodingStrategy {
+        .Date.iso8601(
+            encodeTo: defaultOptions,
+            decodeFrom: [
+                defaultOptions,
+                [defaultOptions, .withFractionalSeconds],
+                [defaultOptions, .withColonSeparatorInTimeZone],
+                [defaultOptions, .withColonSeparatorInTimeZone, .withFractionalSeconds],
+                [.withFullDate, .withDashSeparatorInDate],
+            ]
+        )
     }
 
-    /// the date-time notation as defined by RFC 3339, section 5.6, for example, 2017-07-21T17:32:28Z.
-    static var iso8601: CodingStrategy {
+    /// Decodes/encodes dates following the ISO 8601 standard with custom options.
+    static func iso8601(_ options: ISO8601DateFormatter.Options) -> CodingStrategy {
+        .Date.iso8601(encodeTo: options, decodeFrom: [])
+    }
+    
+    /// Decodes/encodes dates following the ISO 8601 standard with custom options.
+    static func iso8601(
+        encodeTo format: ISO8601DateFormatter.Options,
+        decodeFrom formats: [ISO8601DateFormatter.Options]
+    ) -> CodingStrategy {
         .Date.custom { container in
-            let date = try isoFormatter.date(from: container.decode(Swift.String.self))
+            let string = try container.decode(Swift.String.self)
+            var formats = formats
+            if !formats.contains(format) {
+                formats.insert(format, at: 0)
+            }
+            var date: Date?
+            while date == nil && !formats.isEmpty {
+                isoFormatter.formatOptions = formats.removeFirst()
+                date = isoFormatter.date(from: string)
+            }
             guard let date else {
                 throw DecodingError.dataCorruptedError(
                     in: container,
@@ -39,11 +59,70 @@ public extension CodingStrategy.Date {
             }
             return date
         } encode: { date, container in
-            try container.encode(isoFormatter.string(from: date))
+            isoFormatter.formatOptions = format
+            return try container.encode(isoFormatter.string(from: date))
         }
     }
-
-    /// the interval between the date value and 00:00:00 UTC on 1 January 1970.
+    
+    /// Decodes/encodes dates with custom DateFormatter.
+    static func formatted(_ formatter: DateFormatter) -> CodingStrategy {
+        .Date.custom { container in
+            let string = try container.decode(Swift.String.self)
+            guard let date = formatter.date(from: string) else {
+                throw DecodingError.dataCorruptedError(
+                    in: container,
+                    debugDescription: "Invalid date format. Expected \(formatter.dateFormat ?? "") string."
+                )
+            }
+            return date
+        } encode: { date, container in
+            try container.encode(formatter.string(from: date))
+        }
+    }
+    
+    /// Decodes/encodes dates with custom string format.
+    static func formatted(
+        _ format: String,
+        locale: Locale = Locale(identifier: "en_US_POSIX"),
+        timeZone: TimeZone = TimeZone(secondsFromGMT: 0) ?? .autoupdatingCurrent
+    ) -> CodingStrategy {
+        .Date.formatted(encodeTo: format, decodeFrom: [], locale: locale, timeZone: timeZone)
+    }
+    
+    /// Decodes/encodes dates with custom string format.
+    static func formatted(
+        encodeTo format: String,
+        decodeFrom formats: Set<String>,
+        locale: Locale = Locale(identifier: "en_US_POSIX"),
+        timeZone: TimeZone = TimeZone(secondsFromGMT: 0) ?? .autoupdatingCurrent
+    ) -> CodingStrategy {
+        .Date.custom { container in
+            let string = try container.decode(Swift.String.self)
+            dateFormatter.dateFormat = format
+            dateFormatter.locale = locale
+            dateFormatter.timeZone = timeZone
+            var date: Date?
+            var formats = formats.union([format])
+            while date == nil && !formats.isEmpty {
+                dateFormatter.dateFormat = formats.removeFirst()
+                date = dateFormatter.date(from: string)
+            }
+            guard let date else {
+                throw DecodingError.dataCorruptedError(
+                    in: container,
+                    debugDescription: "Invalid date format. Expected \(format) string."
+                )
+            }
+            return date
+        } encode: { date, container in
+            dateFormatter.dateFormat = format
+            dateFormatter.locale = locale
+            dateFormatter.timeZone = timeZone
+            return try container.encode(dateFormatter.string(from: date))
+        }
+    }
+    
+    /// The interval between the date value and 00:00:00 UTC on 1 January 1970.
     static var timestamp: CodingStrategy {
         .Date.custom { container in
             try Foundation.Date(timeIntervalSince1970: container.decode(TimeInterval.self))
@@ -68,16 +147,7 @@ public extension CodingStrategy.Date {
 
 extension CodingStrategy.Date {
 
-    static var dateFormatter: DateFormatter {
-        _dateFormatter.dateFormat = "yyyy-MM-dd"
-        return _dateFormatter
-    }
+    private static let isoFormatter = ISO8601DateFormatter()
+    private static let defaultOptions: ISO8601DateFormatter.Options = [.withFullDate, .withFullTime, .withDashSeparatorInDate, .withColonSeparatorInTime, .withTimeZone]
+    private static let dateFormatter = DateFormatter()
 }
-
-private let isoFormatter: ISO8601DateFormatter = {
-    let formatter = ISO8601DateFormatter()
-    formatter.formatOptions.insert(.withFractionalSeconds)
-    return formatter
-}()
-
-private let _dateFormatter = DateFormatter()

@@ -13,10 +13,11 @@ final class DecoderProxyTests: XCTestCase {
                 .Numeric.tryDecodeFromString,
                 .Bool.tryDecodeFromString,
                 .Key.fromSnakeCase,
+                .Date.iso8601,
                 DecodingStrategy(ifNil: EmbeddedStruct.self) { decoder in
                     EmbeddedStruct(int: 0, string: "", decimal: 1, date: Date(), keyWithCustomEncoding: "")
                 },
-                DecodingStrategy(decodeIfNil: { type, decoder -> Decodable? in
+                DecodingStrategy(decodeIfNil: { type, _ -> Decodable? in
                     guard let type = type as? any (RangeReplaceableCollection & Decodable).Type else {
                         return nil
                     }
@@ -27,11 +28,11 @@ final class DecoderProxyTests: XCTestCase {
         let string = """
         {
           "bool" : "true",
-          "date" : "2023-09-24T19:01:32.525Z",
+          "date" : "2023-09-24T19:01:32Z",
           "decimal" : "3.0",
           "embedded" : {
             "bool" : "true",
-            "date" : "2023-09-24T19:01:32.525Z",
+            "date" : "2023-09-24T19:01:32Z",
             "decimal" : "3.0",
             "int" : "1",
             "key_with_custom_encoding" : "keyWithCustomEncoding",

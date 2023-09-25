@@ -15,6 +15,7 @@ final class EncoderProxyTests: XCTestCase {
                 .Bool.string,
                 .Key.toSnakeCase,
                 .Optional.null,
+                .Date.iso8601,
                 EncodingStrategy(encodeIfNil: { type, encoder in
                     guard type is any Sequence.Type else {
                         return false
