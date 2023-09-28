@@ -19,7 +19,7 @@ struct DecoderWrapper: Decoder {
     }
     
     func container<Key>(keyedBy type: Key.Type) throws -> KeyedDecodingContainer<Key> where Key : CodingKey {
-        try KeyedDecodingContainer(
+        try! KeyedDecodingContainer(
             KeyedDecodingContainerWrapper(
                 wrapped: wrapped.container(keyedBy: AnyCodingKey.self),
                 decoder: self
@@ -59,7 +59,9 @@ struct DecoderWrapper: Decoder {
         if ignoreStrategy != \.decodeDecodable, let result = try strategy.decodeDecodable?(type, ignoring(\.decodeDecodable)) as? T {
             return result
         }
-        return try decode().decode(strategy: strategy, ignoreStrategy: ignoreStrategy)
+        DecodingStrategy.current = strategy
+        DecodingStrategy.currentIgnoring = ignoreStrategy
+        return try decode().value
     }
     
     @inline(__always)
@@ -84,16 +86,18 @@ struct DecoderWrapper: Decoder {
 
     @inline(__always)
     func decodeIfPresent<T: Decodable>(present: Bool, decode: () throws -> DecoderIntrospect<T>?) throws -> T? {
+        DecodingStrategy.current = strategy
+        DecodingStrategy.currentIgnoring = ignoreStrategy
         if present {
             if ignoreStrategy != \.decodeDecodable, let decode = strategy.decodeDecodable {
                 return try decode(T.self, ignoring(\.decodeDecodable)) as? T
             } else {
-                return try decode()?.decode(strategy: strategy, ignoreStrategy: ignoreStrategy)
+                return try decode()?.value
             }
         } else if ignoreStrategy != \.decodeDecodableIfNil, let decode = strategy.decodeDecodableIfNil {
             return try decode(T.self, ignoring(\.decodeDecodableIfNil)) as? T
         } else {
-            return try decode()?.decode(strategy: strategy, ignoreStrategy: ignoreStrategy)
+            return try decode()?.value
         }
     }
     

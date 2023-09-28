@@ -1,22 +1,48 @@
 import Foundation
+import os.lock
 
 struct DecoderIntrospect<Value: Decodable>: Decodable {
     
-    let decoder: Decoder
-    private var value: Value?
+    let value: Value
     
-    init(from decoder: Decoder) throws {
-        self.decoder = decoder
+    init(_ value: Value) {
+        self.value = value
     }
     
-    func decode(strategy: DecodingStrategy, ignoreStrategy: PartialKeyPath<DecodingStrategy>? = nil) throws -> Value {
-        if let value { return value }
-        let decoderWrapper = DecoderWrapper(decoder, strategy: strategy, ignoreStrategy: ignoreStrategy)
-        return try decoderWrapper.decode(Value.self) {
-            let value = try Value(from: decoderWrapper)
-            var result = self
-            result.value = value
-            return result
+    init(from decoder: Decoder) throws {
+        let decoderWrapper = DecoderWrapper(
+            decoder,
+            strategy: .current,
+            ignoreStrategy: DecodingStrategy.currentIgnoring
+        )
+        value = try decoderWrapper.decode(Value.self) {
+            try DecoderIntrospect(Value(from: decoderWrapper))
+        }
+    }
+}
+
+private let atomicQueue = DispatchQueue(label: "com.global.vars")
+
+private var _strategy: DecodingStrategy = .default
+private var _ignoreStrategy: PartialKeyPath<DecodingStrategy>?
+
+extension DecodingStrategy {
+    
+    static var current: DecodingStrategy {
+        get {
+            return atomicQueue.sync { _strategy }
+        }
+        set {
+            atomicQueue.sync { _strategy = newValue }
+        }
+    }
+    
+    static var currentIgnoring: PartialKeyPath<DecodingStrategy>? {
+        get {
+            return atomicQueue.sync { _ignoreStrategy }
+        }
+        set {
+            atomicQueue.sync { _ignoreStrategy = newValue }
         }
     }
 }
