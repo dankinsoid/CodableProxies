@@ -53,7 +53,7 @@ let decoder = DecoderProxy(JSONDecoder(), strategy: [.Bool.tryDecodeFromString, 
     
 - **Numbers**
   - `.Numeric.string`
-  - 
+    
 - **Optional**
   - `.Optional.null`
 
