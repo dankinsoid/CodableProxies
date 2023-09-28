@@ -19,7 +19,7 @@ struct DecoderWrapper: Decoder {
     }
     
     func container<Key>(keyedBy type: Key.Type) throws -> KeyedDecodingContainer<Key> where Key : CodingKey {
-        try! KeyedDecodingContainer(
+        try KeyedDecodingContainer(
             KeyedDecodingContainerWrapper(
                 wrapped: wrapped.container(keyedBy: AnyCodingKey.self),
                 decoder: self
