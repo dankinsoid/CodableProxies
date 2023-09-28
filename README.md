@@ -17,8 +17,8 @@
 Wrap your encoders and decoders:
 
 ```swift
-let encoder = EncoderProxy(encoder: JSONEncoder(), strategies: [.Bool.string, .Date.iso8601])
-let decoder = DecoderProxy(decoder: JSONDecoder(), strategies: [.Bool.tryDecodeFromString, .Date.iso8601])
+let encoder = EncoderProxy(JSONEncoder(), strategy: [.Bool.string, .Date.iso8601])
+let decoder = DecoderProxy(JSONDecoder(), strategy: [.Bool.tryDecodeFromString, .Date.iso8601])
 ```
 
 ### Encoding Strategies
@@ -66,7 +66,7 @@ let userJSON = """
 }
 """
 
-let decoder = DecoderProxy(decoder: JSONDecoder(), strategies: [.Bool.tryDecodeFromString { $0 == "yes" }, .Date.iso8601])
+let decoder = DecoderProxy(decoder: JSONDecoder(), strategy: [.Bool.tryDecodeFromString { $0 == "yes" }, .Date.iso8601])
 let user = try decoder.decode(User.self, from: userJSON.data(using: .utf8)!)
 ```
 
