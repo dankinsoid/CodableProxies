@@ -9,9 +9,9 @@ struct DecoderIntrospect<Value: Decodable>: Decodable {
         self.decoder = decoder
     }
     
-    func decode(strategy: DecodingStrategy) throws -> Value {
+    func decode(strategy: DecodingStrategy, ignoreStrategy: PartialKeyPath<DecodingStrategy>? = nil) throws -> Value {
         if let value { return value }
-        let decoderWrapper = DecoderWrapper(decoder, strategy: strategy)
+        let decoderWrapper = DecoderWrapper(decoder, strategy: strategy, ignoreStrategy: ignoreStrategy)
         return try decoderWrapper.decode(Value.self) {
             let value = try Value(from: decoderWrapper)
             var result = self

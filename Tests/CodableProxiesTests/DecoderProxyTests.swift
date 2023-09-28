@@ -204,11 +204,11 @@ final class DecoderProxyTests: XCTestCase {
         let decodedModel1 = try proxyDecoder.decode(TestModel1.self, from: jsonString1.data(using: .utf8)!)
         
         XCTAssertEqual(decodedModel1.number, 123)
-//
-//        let jsonString2 = "{\"number\":123}"
-//        let decodedModel2 = try proxyDecoder.decode(TestModel1.self, from: jsonString2.data(using: .utf8)!)
-//
-//        XCTAssertEqual(decodedModel2.number, 123)
+
+        let jsonString2 = "{\"number\":123}"
+        let decodedModel2 = try proxyDecoder.decode(TestModel1.self, from: jsonString2.data(using: .utf8)!)
+
+        XCTAssertEqual(decodedModel2.number, 123)
     }
     
     // MARK: - URL
