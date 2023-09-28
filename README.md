@@ -81,7 +81,8 @@ let decoder = DecoderProxy(JSONDecoder(), strategy: [.Bool.tryDecodeFromString, 
   - `.Date.timestamp`
     
 - **Decimal** 
-  - .Decimal.tryDecodeFromString, .Decimal.number
+  - `.Decimal.tryDecodeFromString`
+  - `.Decimal.number`
     
 - **Keys**
   - `.Key.fromSnakeCase`
