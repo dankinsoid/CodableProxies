@@ -76,7 +76,7 @@ let userJSON = """
 }
 """
 
-let decoder = DecoderProxy(decoder: JSONDecoder(), strategy: [.Bool.tryDecodeFromString, .Date.iso8601])
+let decoder = DecoderProxy(decoder: JSONDecoder(), strategy: [.default, .Bool.tryDecodeFromString, .Date.iso8601])
 let user = try decoder.decode(User.self, from: userJSON.data(using: .utf8)!)
 ```
 
