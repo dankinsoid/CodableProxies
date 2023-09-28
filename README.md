@@ -49,6 +49,16 @@ let decoder = DecoderProxy(JSONDecoder(), strategy: [.Bool.tryDecodeFromString, 
 
 The library offers `CodingProxy` and `CodingStrategy` that bring together both encoding and decoding for symmetrical operations.
 
+## ⚠️ Important Note on Custom Type Encoding/Decoding
+
+When utilizing `CodableProxies`, it's crucial to understand that the library will **override and ignore** any custom encoding and decoding strategies set on the original encoders/decoders. This behavior particularly impacts the following types when used with `JSONEncoder`, `JSONDecoder`, `PropertyListEncoder`, and `PropertyListDecoder`:
+- `Decimal`
+- `URL`
+- `Data`
+- `Date`
+
+To maintain consistency and avoid unexpected outcomes, always include strategies for these types in your proxy encoder/decoder. Conveniently, all these strategies are bundled within `EncoderStrategy.default` and `DecoderStrategy.default`.
+
 ### Example
 
 ```swift
