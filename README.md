@@ -37,28 +37,28 @@ let decoder = DecoderProxy(JSONDecoder(), strategy: [.Bool.tryDecodeFromString, 
   - `.Date.timestamp`: Unix timestamps.
   
 - **Data**
-  - .Data.base64
-  - .Data.base64(options: Data.Base64EncodingOptions)
+  - `.Data.base64`
+  - `.Data.base64(options: Data.Base64EncodingOptions)`
   
 - **Decimal** 
-  - .Decimal.string
-  - .Decimal.number
+  - `.Decimal.string`
+  - `.Decimal.number`
   
 - **Key**
-  - .Key.useDefaultKeys
-  - .Key.toSnakeCase
-  - .Key.toSnakeCase(separator: String)
-  - .Key.toCamelCase
-  - .Key.toCamelCase(separator: String)
+  - `.Key.useDefaultKeys`
+  - `.Key.toSnakeCase`
+  - `.Key.toSnakeCase(separator: String)`
+  - `.Key.toCamelCase`
+  - `.Key.toCamelCase(separator: String)`
     
 - **Numbers**
-  - .Numeric.string
+  - `.Numeric.string`
   - 
 - **Optional**
-  - .Optional.null
+  - `.Optional.null`
 
 - **URL**
-  - .URL.uri
+  - `.URL.uri`
 
 ### Decoding Strategies
 
@@ -67,33 +67,33 @@ let decoder = DecoderProxy(JSONDecoder(), strategy: [.Bool.tryDecodeFromString, 
   - `.Bool.tryDecodeFromString(_ condition: (String) -> Bool)`: Attempt to decode booleans from a string representation.
     
 - **Data**  
-  - .Data.base64
-  - .Data.base64(options: Foundation.Data.Base64DecodingOptions)
+  - `.Data.base64`
+  - `.Data.base64(options: Foundation.Data.Base64DecodingOptions)`
     
 - **Date** 
-  - .Date.date
-  - .Date.iso8601
-  - .Date.iso8601(_ options: ISO8601DateFormatter.Options)
-  - .Date.iso8601(formats options: [ISO8601DateFormatter.Options])
-  - .Date.formatted(_ formatter: DateFormatter)
-  - .Date.formatted(_ format: String, locale: Locale, timeZone: TimeZone)
-  - .Date.formatted(formats: Set<String>, locale: Locale, timeZone: TimeZone)
-  - .Date.timestamp
+  - `.Date.date`
+  - `.Date.iso8601`
+  - `.Date.iso8601(_ options: ISO8601DateFormatter.Options)`
+  - `.Date.iso8601(formats options: [ISO8601DateFormatter.Options])`
+  - `.Date.formatted(_ formatter: DateFormatter)`
+  - `.Date.formatted(_ format: String, locale: Locale, timeZone: TimeZone)`
+  - `.Date.formatted(formats: Set<String>, locale: Locale, timeZone: TimeZone)`
+  - `.Date.timestamp`
     
 - **Decimal** 
   - .Decimal.tryDecodeFromString, .Decimal.number
     
 - **Keys**
-  - .Key.fromSnakeCase
-  - .Key.fromSnakeCase(separator: String)
-  - .Key.fromCamelCase
-  - .Key.fromCamelCase(separator: String)
+  - `.Key.fromSnakeCase`
+  - `.Key.fromSnakeCase(separator: String)`
+  - `.Key.fromCamelCase`
+  - `.Key.fromCamelCase(separator: String)`
     
 - **Numbers**
-  - .Numeric.tryDecodeFromString
+  - `.Numeric.tryDecodeFromString`
     
 - **URL**
-  - .URL.uri
+  - `.URL.uri`
 
 ### Union Types
 
