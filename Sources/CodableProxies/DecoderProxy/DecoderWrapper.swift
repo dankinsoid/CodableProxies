@@ -47,20 +47,35 @@ struct DecoderWrapper: Decoder {
         _ keyPath: KeyPath<DecodingStrategy, ((Decoder) throws -> T)?>,
         decode: () throws -> T
     ) throws -> T {
-        if ignoreStrategy != keyPath, let decode = strategy[keyPath: keyPath] {
-            return try decode(ignoring(keyPath))
-        } else {
-            return try decode()
+        do {
+            if ignoreStrategy != keyPath, let decode = strategy[keyPath: keyPath] {
+                return try decode(ignoring(keyPath))
+            }
+        } catch let strategyError {
+            do {
+                return try decode()
+            } catch {
+                throw strategyError
+            }
         }
+        return try decode()
     }
     
     @inline(__always)
     func decode<T: Decodable>(_ type: T.Type, decode: () throws -> DecoderIntrospect<T>) throws -> T {
-        if ignoreStrategy != \.decodeDecodable, let result = try strategy.decodeDecodable?(type, ignoring(\.decodeDecodable)) as? T {
-            return result
+        do {
+            if ignoreStrategy != \.decodeDecodable, let result = try strategy.decodeDecodable?(type, ignoring(\.decodeDecodable)) as? T {
+                return result
+            }
+            DecodingStrategy.current = strategy
+            DecodingStrategy.currentIgnoring = ignoreStrategy
+        } catch let strategyError {
+            do {
+                return try decode().value
+            } catch {
+                throw strategyError
+            }
         }
-        DecodingStrategy.current = strategy
-        DecodingStrategy.currentIgnoring = ignoreStrategy
         return try decode().value
     }
     
@@ -71,34 +86,44 @@ struct DecoderWrapper: Decoder {
         _ keyPath: KeyPath<DecodingStrategy, ((Decoder) throws -> T)?>,
         decode: () throws -> T?
     ) throws -> T? {
-        if present {
-            if ignoreStrategy != keyPath, let decode = strategy[keyPath: keyPath] {
-                return try decode(ignoring(keyPath))
-            } else {
-                return try decode()
+        do {
+            if present {
+                if ignoreStrategy != keyPath, let decode = strategy[keyPath: keyPath] {
+                    return try decode(ignoring(keyPath))
+                }
+            } else if ignoreStrategy != keyPathIfNil, let decode = strategy[keyPath: keyPathIfNil] {
+                return try decode(ignoring(keyPathIfNil))
             }
-        } else if ignoreStrategy != keyPathIfNil, let decode = strategy[keyPath: keyPathIfNil] {
-            return try decode(ignoring(keyPathIfNil))
-        } else {
-            return try decode()
+        } catch let strategyError {
+            do {
+                return try decode()
+            } catch {
+                throw strategyError
+            }
         }
+        return try decode()
     }
 
     @inline(__always)
     func decodeIfPresent<T: Decodable>(present: Bool, decode: () throws -> DecoderIntrospect<T>?) throws -> T? {
         DecodingStrategy.current = strategy
         DecodingStrategy.currentIgnoring = ignoreStrategy
-        if present {
-            if ignoreStrategy != \.decodeDecodable, let decode = strategy.decodeDecodable {
-                return try decode(T.self, ignoring(\.decodeDecodable)) as? T
-            } else {
-                return try decode()?.value
+        do {
+            if present {
+                if ignoreStrategy != \.decodeDecodable, let decode = strategy.decodeDecodable {
+                    return try decode(T.self, ignoring(\.decodeDecodable)) as? T
+                }
+            } else if ignoreStrategy != \.decodeDecodableIfNil, let decode = strategy.decodeDecodableIfNil {
+                return try decode(T.self, ignoring(\.decodeDecodableIfNil)) as? T
             }
-        } else if ignoreStrategy != \.decodeDecodableIfNil, let decode = strategy.decodeDecodableIfNil {
-            return try decode(T.self, ignoring(\.decodeDecodableIfNil)) as? T
-        } else {
-            return try decode()?.value
+        } catch let strategyError {
+            do {
+                return try decode()?.value
+            } catch {
+                throw strategyError
+            }
         }
+        return try decode()?.value
     }
     
     @inline(__always)

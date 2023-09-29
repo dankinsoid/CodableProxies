@@ -171,40 +171,40 @@ public extension DecodingStrategy {
     
     func merging(with other: DecodingStrategy) -> DecodingStrategy {
         DecodingStrategy(
-            decodeNil: other.decodeNil ?? decodeNil,
-            decodeBool: other.decodeBool ?? decodeBool,
-            decodeString: other.decodeString ?? decodeString,
-            decodeDouble: other.decodeDouble ?? decodeDouble,
-            decodeFloat: other.decodeFloat ?? decodeFloat,
-            decodeInt: other.decodeInt ?? decodeInt,
-            decodeInt8: other.decodeInt8 ?? decodeInt8,
-            decodeInt16: other.decodeInt16 ?? decodeInt16,
-            decodeInt32: other.decodeInt32 ?? decodeInt32,
-            decodeInt64: other.decodeInt64 ?? decodeInt64,
-            decodeUInt: other.decodeUInt ?? decodeUInt,
-            decodeUInt8: other.decodeUInt8 ?? decodeUInt8,
-            decodeUInt16: other.decodeUInt16 ?? decodeUInt16,
-            decodeUInt32: other.decodeUInt32 ?? decodeUInt32,
-            decodeUInt64: other.decodeUInt64 ?? decodeUInt64,
+            decodeNil: tryBoth(other.decodeNil, decodeNil),
+            decodeBool: tryBoth(other.decodeBool, decodeBool),
+            decodeString: tryBoth(other.decodeString, decodeString),
+            decodeDouble: tryBoth(other.decodeDouble, decodeDouble),
+            decodeFloat: tryBoth(other.decodeFloat, decodeFloat),
+            decodeInt: tryBoth(other.decodeInt, decodeInt),
+            decodeInt8: tryBoth(other.decodeInt8, decodeInt8),
+            decodeInt16: tryBoth(other.decodeInt16, decodeInt16),
+            decodeInt32: tryBoth(other.decodeInt32, decodeInt32),
+            decodeInt64: tryBoth(other.decodeInt64, decodeInt64),
+            decodeUInt: tryBoth(other.decodeUInt, decodeUInt),
+            decodeUInt8: tryBoth(other.decodeUInt8, decodeUInt8),
+            decodeUInt16: tryBoth(other.decodeUInt16, decodeUInt16),
+            decodeUInt32: tryBoth(other.decodeUInt32, decodeUInt32),
+            decodeUInt64: tryBoth(other.decodeUInt64, decodeUInt64),
             decodeDecodable: other.decodeDecodable.map { decodeDecodable in
                 {
                     try decodeDecodable($0, $1) ?? self.decodeDecodable?($0, $1)
                 }
             } ?? decodeDecodable,
-            decodeBoolIfNil: other.decodeBoolIfNil ?? decodeBoolIfNil,
-            decodeStringIfNil: other.decodeStringIfNil ?? decodeStringIfNil,
-            decodeDoubleIfNil: other.decodeDoubleIfNil ?? decodeDoubleIfNil,
-            decodeFloatIfNil: other.decodeFloatIfNil ?? decodeFloatIfNil,
-            decodeIntIfNil: other.decodeIntIfNil ?? decodeIntIfNil,
-            decodeInt8IfNil: other.decodeInt8IfNil ?? decodeInt8IfNil,
-            decodeInt16IfNil: other.decodeInt16IfNil ?? decodeInt16IfNil,
-            decodeInt32IfNil: other.decodeInt32IfNil ?? decodeInt32IfNil,
-            decodeInt64IfNil: other.decodeInt64IfNil ?? decodeInt64IfNil,
-            decodeUIntIfNil: other.decodeUIntIfNil ?? decodeUIntIfNil,
-            decodeUInt8IfNil: other.decodeUInt8IfNil ?? decodeUInt8IfNil,
-            decodeUInt16IfNil: other.decodeUInt16IfNil ?? decodeUInt16IfNil,
-            decodeUInt32IfNil: other.decodeUInt32IfNil ?? decodeUInt32IfNil,
-            decodeUInt64IfNil: other.decodeUInt64IfNil ?? decodeUInt64IfNil,
+            decodeBoolIfNil: tryBoth(other.decodeBoolIfNil, decodeBoolIfNil),
+            decodeStringIfNil: tryBoth(other.decodeStringIfNil, decodeStringIfNil),
+            decodeDoubleIfNil: tryBoth(other.decodeDoubleIfNil, decodeDoubleIfNil),
+            decodeFloatIfNil: tryBoth(other.decodeFloatIfNil, decodeFloatIfNil),
+            decodeIntIfNil: tryBoth(other.decodeIntIfNil, decodeIntIfNil),
+            decodeInt8IfNil: tryBoth(other.decodeInt8IfNil, decodeInt8IfNil),
+            decodeInt16IfNil: tryBoth(other.decodeInt16IfNil, decodeInt16IfNil),
+            decodeInt32IfNil: tryBoth(other.decodeInt32IfNil, decodeInt32IfNil),
+            decodeInt64IfNil: tryBoth(other.decodeInt64IfNil, decodeInt64IfNil),
+            decodeUIntIfNil: tryBoth(other.decodeUIntIfNil, decodeUIntIfNil),
+            decodeUInt8IfNil: tryBoth(other.decodeUInt8IfNil, decodeUInt8IfNil),
+            decodeUInt16IfNil: tryBoth(other.decodeUInt16IfNil, decodeUInt16IfNil),
+            decodeUInt32IfNil: tryBoth(other.decodeUInt32IfNil, decodeUInt32IfNil),
+            decodeUInt64IfNil: tryBoth(other.decodeUInt64IfNil, decodeUInt64IfNil),
             decodeDecodableIfNil: other.decodeDecodableIfNil.map { decodeDecodableIfNil in
                 {
                     try decodeDecodableIfNil($0, $1) ?? self.decodeDecodableIfNil?($0, $1)
@@ -226,4 +226,19 @@ extension DecodingStrategy: ExpressibleByArrayLiteral {
 extension DecodingStrategy {
     
     public static var `default`: DecodingStrategy = [.Date.default, .URL.default, .Decimal.default]
+}
+
+private func tryBoth<T>(_ first: ((Decoder) throws -> T)?, _ second: ((Decoder) throws -> T)?) -> ((Decoder) throws -> T)? {
+    return first.map { first in
+        { decoder in
+            do {
+                return try first(decoder)
+            } catch {
+                if let second {
+                    return try second(decoder)
+                }
+                throw error
+            }
+        }
+    } ?? second
 }

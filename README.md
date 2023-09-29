@@ -12,13 +12,34 @@
 
 ## Usage
 
+### Example
+
+```swift
+struct User: Codable {
+    let isActive: Bool
+    let birthDate: Date
+    ...
+}
+
+let userJSON = """
+{
+    "isActive": "yes",
+    "birthDate": "1990-01-01T00:00:00Z",
+    ...
+}
+"""
+
+let decoder = DecoderProxy(decoder: JSONDecoder(), strategy: [.default, .Bool.string, .Date.iso8601])
+let user = try decoder.decode(User.self, from: userJSON.data(using: .utf8)!)
+```
+
 ### Initialization
 
 Wrap your encoders and decoders:
 
 ```swift
 let encoder = EncoderProxy(JSONEncoder(), strategy: [.Bool.string, .Date.iso8601])
-let decoder = DecoderProxy(JSONDecoder(), strategy: [.Bool.tryDecodeFromString, .Date.iso8601])
+let decoder = DecoderProxy(JSONDecoder(), strategy: [.Bool.string, .Date.iso8601])
 ```
 
 ### Encoding Strategies
@@ -63,13 +84,13 @@ let decoder = DecoderProxy(JSONDecoder(), strategy: [.Bool.tryDecodeFromString, 
 ### Decoding Strategies
 
 - **Bool**
-  - `.Bool.tryDecodeFromString`: Attempt to decode booleans from a string representation.
-  - `.Bool.tryDecodeFromString(_ condition: (String) -> Bool)`: Attempt to decode booleans from a string representation.
-    
+  - `.Bool.string`: Attempt to decode booleans from a string representation.
+  - `.Bool.string(_ condition: (String) -> Bool)`: Attempt to decode booleans from a string representation.
+
 - **Data**  
   - `.Data.base64`
   - `.Data.base64(options: Foundation.Data.Base64DecodingOptions)`
-    
+
 - **Date** 
   - `.Date.date`
   - `.Date.iso8601`
@@ -79,26 +100,42 @@ let decoder = DecoderProxy(JSONDecoder(), strategy: [.Bool.tryDecodeFromString, 
   - `.Date.formatted(_ format: String, locale: Locale, timeZone: TimeZone)`
   - `.Date.formatted(formats: Set<String>, locale: Locale, timeZone: TimeZone)`
   - `.Date.timestamp`
-    
+
 - **Decimal** 
-  - `.Decimal.tryDecodeFromString`
+  - `.Decimal.string`
   - `.Decimal.number`
-    
+
 - **Keys**
   - `.Key.fromSnakeCase`
   - `.Key.fromSnakeCase(separator: String)`
   - `.Key.fromCamelCase`
   - `.Key.fromCamelCase(separator: String)`
-    
+
 - **Numbers**
-  - `.Numeric.tryDecodeFromString`
-    
+  - `.Numeric.string`
+
 - **URL**
   - `.URL.uri`
 
 ### Union Types
 
 The library offers `CodingProxy` and `CodingStrategy` that bring together both encoding and decoding for symmetrical operations.
+
+## 📝 Combining Encoding and Decoding Strategies
+
+When setting multiple strategies, the behavior varies between encoding and decoding:
+
+### Encoding:
+If you combine multiple encoding strategies for the same type, only the **last strategy specified** will be applied. Strategies specified earlier will be overridden.
+
+**Example:**
+Using ` [.Date.iso8601, .Date.timestamp]` for encoding will result in the date being encoded as a timestamp, as `.Date.timestamp` is the last strategy listed.
+
+### Decoding:
+For decoding, if multiple strategies are specified for the same type, all of them will be attempted in the order they are provided. Decoding will succeed if any of the strategies succeeds. If all custom strategies fail, the original strategy of the decoder will be used as a fallback.
+
+**Example:**
+With ` [.Date.iso8601, .Date.timestamp]` for decoding, the proxy will first attempt to decode the date in the ISO8601 format. If that fails, it will then try to decode it as a timestamp. If both strategies fail, the date will be decoded using the decoder's original strategy.
 
 ## ⚠️ Important Note on Custom Type Encoding/Decoding
 
@@ -110,26 +147,12 @@ When utilizing `CodableProxies`, it's crucial to understand that the library wil
 
 To maintain consistency and avoid unexpected outcomes, always include strategies for these types in your proxy encoder/decoder. Conveniently, all these strategies are bundled within `EncoderStrategy.default` and `DecoderStrategy.default`.
 
-### Example
+## Upcoming Enhancements:
 
-```swift
-struct User: Codable {
-    let isActive: Bool
-    let birthDate: Date
-    ...
-}
-
-let userJSON = """
-{
-    "isActive": "yes",
-    "birthDate": "1990-01-01T00:00:00Z",
-    ...
-}
-"""
-
-let decoder = DecoderProxy(decoder: JSONDecoder(), strategy: [.default, .Bool.tryDecodeFromString, .Date.iso8601])
-let user = try decoder.decode(User.self, from: userJSON.data(using: .utf8)!)
-```
+- **Diagnostic Tools**: Introduce strategies and utilities to aid in testing encoders and decoders, such as `EncodingStrategy.print`.
+- **Collection Handling**: Implement strategies like `.Collection.nilIfEmpty` and `.Collection.emptyIfNil` to better manage collection states.
+- **Structural Strategies**: Develop strategies that work with deep keys, allowing for nuanced modifications in object structures.
+- **Enhanced Flexibility**: Further refine and expand the range of available strategies for broader use cases and adaptability.
 
 ## Installation
 
@@ -143,7 +166,7 @@ import PackageDescription
 let package = Package(
   name: "SomeProject",
   dependencies: [
-    .package(url: "https://github.com/dankinsoid/CodableProxies.git", from: "1.0.0")
+    .package(url: "https://github.com/dankinsoid/CodableProxies.git", from: "1.1.0")
   ],
   targets: [
     .target(name: "SomeProject", dependencies: ["CodableProxies"])

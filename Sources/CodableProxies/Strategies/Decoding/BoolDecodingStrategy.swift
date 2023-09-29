@@ -9,25 +9,19 @@ public extension DecodingStrategy {
 
 public extension DecodingStrategy.Bool {
     
-    /// Decodes booleans from strings if the value is not a boolean.
-    static var tryDecodeFromString: DecodingStrategy {
-        .Bool.tryDecodeFromString {
+    /// Decodes booleans from strings if the value is quoted.
+    static var string: DecodingStrategy {
+        .Bool.string {
             defaultTrueString.contains($0.lowercased())
         }
     }
     
-    /// Decodes booleans from strings if the value is not a boolean.
-    static func tryDecodeFromString(_ condition: @escaping (Swift.String) -> Swift.Bool) -> DecodingStrategy {
+    /// Decodes booleans from strings if the value is quoted.
+    static func string(_ condition: @escaping (Swift.String) -> Swift.Bool) -> DecodingStrategy {
         DecodingStrategy(
             decodeBool: {
                 let container = try $0.singleValueContainer()
-                let string: Swift.String
-                do {
-                    string = try container.decode(Swift.String.self)
-                } catch {
-                    return try container.decode(Swift.Bool.self)
-                }
-                return condition(string)
+                return try condition(container.decode(Swift.String.self))
             }
         )
     }

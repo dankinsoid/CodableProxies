@@ -9,13 +9,13 @@ public extension CodingStrategy {
 
 public extension CodingStrategy.Bool {
     
-    /// Decodes booleans from strings if the value is not a boolean.
-    static var tryDecodeFromString: CodingStrategy {
-        CodingStrategy(decoding: .Bool.tryDecodeFromString, encoding: EncodingStrategy())
+    /// Decodes booleans from strings if the value is quoted.
+    static var decodeFromString: CodingStrategy {
+        CodingStrategy(decoding: .Bool.string, encoding: EncodingStrategy())
     }
     
-    /// Encodes booleans as strings and decodes booleans from strings if the value is not a boolean.
+    /// Encodes booleans as strings and decodes booleans from strings if the value is quoted.
     static var string: CodingStrategy {
-        CodingStrategy(decoding: .Bool.tryDecodeFromString, encoding: .Bool.string)
+        CodingStrategy(decoding: .Bool.string, encoding: .Bool.string)
     }
 }

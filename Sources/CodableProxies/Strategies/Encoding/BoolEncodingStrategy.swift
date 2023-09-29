@@ -9,12 +9,12 @@ public extension EncodingStrategy {
 
 public extension EncodingStrategy.Bool {
     
-    /// Encodes booleans as strings.
+    /// Encodes booleans as quoted strings.
     static var string: EncodingStrategy {
         .Bool.string(true: "true", false: "false")
     }
     
-    /// Encodes booleans as strings.
+    /// Encodes booleans as quoted strings.
     static func string(true trueString: Swift.String, false falseString: Swift.String) -> EncodingStrategy {
         EncodingStrategy(
             encodeBool: {

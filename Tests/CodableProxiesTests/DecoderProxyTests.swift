@@ -8,7 +8,7 @@ final class DecoderProxyTests: XCTestCase {
     // MARK: - Bool
     
     func testDecodingBoolAsStringTrueFalseDefault() throws {
-        let proxyDecoder = DecoderProxy(decoder, strategy: .Bool.tryDecodeFromString)
+        let proxyDecoder = DecoderProxy(decoder, strategy: .Bool.string)
         
         let testValue = "\"true\""
         let decodedBool = try proxyDecoder.decode(Bool.self, from: testValue.data(using: .utf8)!)
@@ -22,7 +22,7 @@ final class DecoderProxyTests: XCTestCase {
     }
     
     func testDecodingBoolAsStringCustom() throws {
-        let proxyDecoder = DecoderProxy(decoder, strategy: .Bool.tryDecodeFromString)
+        let proxyDecoder = DecoderProxy(decoder, strategy: .Bool.string)
         
         let testValue = "\"YES\""
         let decodedBool = try proxyDecoder.decode(Bool.self, from: testValue.data(using: .utf8)!)
@@ -130,7 +130,7 @@ final class DecoderProxyTests: XCTestCase {
     
     // Testing decoding a Decimal from a String
     func testDecodingDecimalFromString() throws {
-        let proxyDecoder = DecoderProxy(decoder, strategy: .Decimal.tryDecodeFromString)
+        let proxyDecoder = DecoderProxy(decoder, strategy: .Decimal.string)
         
         let originalDecimalString = "\"123.456\""  // The Decimal represented as a quoted string in JSON.
         let decodedDecimal = try proxyDecoder.decode(Decimal.self, from: originalDecimalString.data(using: .utf8)!)
@@ -198,7 +198,7 @@ final class DecoderProxyTests: XCTestCase {
     
     // Testing decoding numeric values from a String
     func testDecodingNumericFromString() throws {
-        let proxyDecoder = DecoderProxy(decoder, strategy: .Numeric.tryDecodeFromString)
+        let proxyDecoder = DecoderProxy(decoder, strategy: .Numeric.string)
         
         let jsonString1 = "{\"number\":\"123\"}"
         let decodedModel1 = try proxyDecoder.decode(TestModel1.self, from: jsonString1.data(using: .utf8)!)
@@ -236,7 +236,7 @@ final class DecoderProxyTests: XCTestCase {
     // Testing decoding of a single value
     func testDecodingSingleValue() throws {
         let jsonString = "\"42\""
-        let proxyDecoder = DecoderProxy(decoder, strategy: .Numeric.tryDecodeFromString)
+        let proxyDecoder = DecoderProxy(decoder, strategy: .Numeric.string)
         let decodedValue = try proxyDecoder.decode(Int.self, from: jsonString.data(using: .utf8)!)
         
         XCTAssertEqual(decodedValue, 42)
@@ -245,7 +245,7 @@ final class DecoderProxyTests: XCTestCase {
     // Testing decoding of a single object
     func testDecodingObject() throws {
         let jsonString = "{\"name\":\"John\",\"age\":\"30\"}"
-        let proxyDecoder = DecoderProxy(decoder, strategy: .Numeric.tryDecodeFromString)
+        let proxyDecoder = DecoderProxy(decoder, strategy: .Numeric.string)
         let decodedPerson = try proxyDecoder.decode(Person.self, from: jsonString.data(using: .utf8)!)
         
         XCTAssertEqual(decodedPerson.name, "John")
@@ -254,8 +254,8 @@ final class DecoderProxyTests: XCTestCase {
     
     // Testing decoding of an array of objects
     func testDecodingArray() throws {
-        let jsonString = "[{\"name\":\"John\",\"age\":\"30\"},{\"name\":\"Doe\",\"age\":\"25\"}]"
-        let proxyDecoder = DecoderProxy(decoder, strategy: .Numeric.tryDecodeFromString)
+        let jsonString = "[{\"name\":\"John\",\"age\":30},{\"name\":\"Doe\",\"age\":\"25\"}]"
+        let proxyDecoder = DecoderProxy(decoder, strategy: .Numeric.string)
         let decodedGroup = try proxyDecoder.decode([Person].self, from: jsonString.data(using: .utf8)!)
         
         XCTAssertEqual(decodedGroup[0].name, "John")
@@ -266,8 +266,8 @@ final class DecoderProxyTests: XCTestCase {
     
     // Testing decoding of nested data structures
     func testDecodingNestedDataStructures() throws {
-        let jsonString = "{\"groupName\":\"Test Group\",\"members\":[{\"name\":\"John\",\"age\":\"30\"},{\"name\":\"Doe\",\"age\":\"25\"}]}"
-        let proxyDecoder = DecoderProxy(decoder, strategy: .Numeric.tryDecodeFromString)
+        let jsonString = "{\"groupName\":\"Test Group\",\"members\":[{\"name\":\"John\",\"age\":\"30\"},{\"name\":\"Doe\",\"age\":25}]}"
+        let proxyDecoder = DecoderProxy(decoder, strategy: .Numeric.string)
         let decodedGroup = try proxyDecoder.decode(Group.self, from: jsonString.data(using: .utf8)!)
         
         XCTAssertEqual(decodedGroup.groupName, "Test Group")

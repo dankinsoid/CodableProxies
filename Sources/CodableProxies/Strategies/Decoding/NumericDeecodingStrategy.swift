@@ -9,8 +9,8 @@ public extension DecodingStrategy {
 
 public extension DecodingStrategy.Numeric {
     
-    /// Numeric coding strategy that tries to decode from a string if the value is not a number.
-    static var tryDecodeFromString: DecodingStrategy {
+    /// Numeric coding strategy that tries to decode from a string if the value is quoted.
+    static var string: DecodingStrategy {
         DecodingStrategy(
             decodeDouble: { try decodeFromString($0) { try $0.decode(Swift.Double.self) } },
             decodeFloat: { try decodeFromString($0) { try $0.decode(Swift.Float.self) } },
@@ -33,12 +33,7 @@ private extension DecodingStrategy.Numeric {
     @inline(__always)
     static func decodeFromString<T: LosslessStringConvertible>(_ decoder: Decoder, decode: (SingleValueDecodingContainer) throws -> T) throws -> T {
         let container = try decoder.singleValueContainer()
-        let string: Swift.String
-        do {
-            string = try container.decode(Swift.String.self)
-        } catch {
-            return try decode(container)
-        }
+        let string = try container.decode(Swift.String.self)
         if let result = T.init(string) {
             return result
         }
