@@ -42,80 +42,18 @@ let encoder = EncoderProxy(JSONEncoder(), strategy: [.Bool.string, .Date.iso8601
 let decoder = DecoderProxy(JSONDecoder(), strategy: [.Bool.string, .Date.iso8601])
 ```
 
-### Encoding Strategies
+### Available strategies
+#### [Full list](/Strategies.md)
 
-- **Bool**
-  - `.Bool.string`: Encode booleans as "true"/"false".
-  - `.Bool.string(true: String, false: String)`: Provide custom representations for booleans.
+- **`.Bool`**: `decodeFromString`, `string`.
+- **`.Data`**: `base64`.
+- **`.Date`**: `date`, `iso8601`, `formatted(formatter:)`, `timestamp`.
+- **`.Decimal`**: `string`, `number`.
+- **`.Keys`**: `useDefaultKeys`, `snakeCase`, `camelCase`, `custom(...)`.
+- **`.Numeric`**: `string`.
+- **`.Optional`**: `encodeNull`.
+- **`.URL`**: `uri`.
 
-- **Data**
-  - `.Data.base64(options: Data.Base64EncodingOptions)`: Encode data as Base64.
-
-- **Date**
-  - `.Date.date`: Default representation.
-  - `.Date.iso8601(_ option: ISO8601DateFormatter.Options)`: ISO8601 formatted dates.
-  - `.Date.formatted(_ formatter: DateFormatter)`: Custom date formats.
-  - `.Date.timestamp`: Unix timestamps.
-  
-- **Data**
-  - `.Data.base64`
-  - `.Data.base64(options: Data.Base64EncodingOptions)`
-  
-- **Decimal** 
-  - `.Decimal.string`
-  - `.Decimal.number`
-  
-- **Key**
-  - `.Key.useDefaultKeys`
-  - `.Key.toSnakeCase`
-  - `.Key.toSnakeCase(separator: String)`
-  - `.Key.toCamelCase`
-  - `.Key.toCamelCase(separator: String)`
-    
-- **Numbers**
-  - `.Numeric.string`
-    
-- **Optional**
-  - `.Optional.null`
-
-- **URL**
-  - `.URL.uri`
-
-### Decoding Strategies
-
-- **Bool**
-  - `.Bool.string`: Attempt to decode booleans from a string representation.
-  - `.Bool.string(_ condition: (String) -> Bool)`: Attempt to decode booleans from a string representation.
-
-- **Data**  
-  - `.Data.base64`
-  - `.Data.base64(options: Foundation.Data.Base64DecodingOptions)`
-
-- **Date** 
-  - `.Date.date`
-  - `.Date.iso8601`
-  - `.Date.iso8601(_ options: ISO8601DateFormatter.Options)`
-  - `.Date.iso8601(formats options: [ISO8601DateFormatter.Options])`
-  - `.Date.formatted(_ formatter: DateFormatter)`
-  - `.Date.formatted(_ format: String, locale: Locale, timeZone: TimeZone)`
-  - `.Date.formatted(formats: Set<String>, locale: Locale, timeZone: TimeZone)`
-  - `.Date.timestamp`
-
-- **Decimal** 
-  - `.Decimal.string`
-  - `.Decimal.number`
-
-- **Keys**
-  - `.Key.fromSnakeCase`
-  - `.Key.fromSnakeCase(separator: String)`
-  - `.Key.fromCamelCase`
-  - `.Key.fromCamelCase(separator: String)`
-
-- **Numbers**
-  - `.Numeric.string`
-
-- **URL**
-  - `.URL.uri`
 
 ### Union Types
 
@@ -166,7 +104,7 @@ import PackageDescription
 let package = Package(
   name: "SomeProject",
   dependencies: [
-    .package(url: "https://github.com/dankinsoid/CodableProxies.git", from: "1.1.0")
+    .package(url: "https://github.com/dankinsoid/CodableProxies.git", from: "1.1.1")
   ],
   targets: [
     .target(name: "SomeProject", dependencies: ["CodableProxies"])

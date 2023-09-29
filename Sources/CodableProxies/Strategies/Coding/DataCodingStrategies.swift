@@ -10,12 +10,12 @@ public extension CodingStrategy.Data {
 
 	static var `default`: CodingStrategy { .Data.base64 }
 
-	/// Base64 string.
+	/// Encodes data as Base64 and decodes Base64 data.
 	static var base64: CodingStrategy {
 		.Data.base64()
 	}
 
-	/// Base64 string.
+	/// Encodes data as Base64 and decodes Base64 data.
 	static func base64(
 		decodingOptions: Foundation.Data.Base64DecodingOptions = [],
 		encodingOptions: Foundation.Data.Base64EncodingOptions = []
