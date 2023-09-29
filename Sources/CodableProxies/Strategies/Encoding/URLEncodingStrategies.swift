@@ -9,7 +9,7 @@ public extension EncodingStrategy {
 public extension EncodingStrategy.URL {
 
 	static var `default`: EncodingStrategy {
-		.URL.default
+		.URL.uri
 	}
 
 	/// URI string.

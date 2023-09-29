@@ -235,11 +235,18 @@ public extension DecodingStrategy {
 			decodeUInt16: tryBoth(other.decodeUInt16, decodeUInt16),
 			decodeUInt32: tryBoth(other.decodeUInt32, decodeUInt32),
 			decodeUInt64: tryBoth(other.decodeUInt64, decodeUInt64),
-			decodeDecodable: other.decodeDecodable.map { decodeDecodable in
+			decodeDecodable: decodeDecodable.map { decodeDecodable in
 				{
-					try decodeDecodable($0, $1) ?? self.decodeDecodable?($0, $1)
+                    do {
+                        return try decodeDecodable($0, $1)
+                    } catch {
+                        if let decode = other.decodeDecodable {
+                            return try decode($0, $1)
+                        }
+                        throw error
+                    }
 				}
-			} ?? decodeDecodable,
+            } ?? other.decodeDecodable,
 			decodeBoolIfNil: tryBoth(other.decodeBoolIfNil, decodeBoolIfNil),
 			decodeStringIfNil: tryBoth(other.decodeStringIfNil, decodeStringIfNil),
 			decodeDoubleIfNil: tryBoth(other.decodeDoubleIfNil, decodeDoubleIfNil),
@@ -254,11 +261,18 @@ public extension DecodingStrategy {
 			decodeUInt16IfNil: tryBoth(other.decodeUInt16IfNil, decodeUInt16IfNil),
 			decodeUInt32IfNil: tryBoth(other.decodeUInt32IfNil, decodeUInt32IfNil),
 			decodeUInt64IfNil: tryBoth(other.decodeUInt64IfNil, decodeUInt64IfNil),
-			decodeDecodableIfNil: other.decodeDecodableIfNil.map { decodeDecodableIfNil in
-				{
-					try decodeDecodableIfNil($0, $1) ?? self.decodeDecodableIfNil?($0, $1)
-				}
-			} ?? decodeDecodableIfNil,
+            decodeDecodableIfNil: decodeDecodableIfNil.map { decodeDecodableIfNil in
+                {
+                    do {
+                        return try decodeDecodableIfNil($0, $1)
+                    } catch {
+                        if let decode = other.decodeDecodableIfNil {
+                            return try decode($0, $1)
+                        }
+                        throw error
+                    }
+                }
+            } ?? other.decodeDecodableIfNil,
 			decodeKey: other.decodeKey ?? decodeKey
 		)
 	}
@@ -277,7 +291,7 @@ public extension DecodingStrategy {
 	static var `default`: DecodingStrategy = [.Date.default, .URL.default, .Decimal.default]
 }
 
-private func tryBoth<T>(_ first: ((Decoder) throws -> T)?, _ second: ((Decoder) throws -> T)?) -> ((Decoder) throws -> T)? {
+private func tryBoth<T>(_ second: ((Decoder) throws -> T)?, _ first: ((Decoder) throws -> T)?) -> ((Decoder) throws -> T)? {
 	first.map { first in
 		{ decoder in
 			do {
